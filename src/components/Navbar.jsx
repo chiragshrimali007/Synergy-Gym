@@ -1,30 +1,41 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { assets } from "../config/assets";
 import { BUSINESS_INFO } from "../config/business";
 import { WHATSAPP_MESSAGES, buildWhatsAppUrl } from "../utils/whatsapp";
+import { handleImageFallback } from "../utils/media";
 import { Menu, X, ArrowUpRight, Phone } from "lucide-react";
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const drawerRef = useRef(null);
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 24);
+      setIsScrolled(window.scrollY > 20);
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Lock body scroll when mobile menu is open
+  // Lock body scroll and listen for Escape key when mobile menu is open
   useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape" && mobileMenuOpen) {
+        setMobileMenuOpen(false);
+      }
+    };
+
     if (mobileMenuOpen) {
       document.body.style.overflow = "hidden";
+      window.addEventListener("keydown", handleKeyDown);
     } else {
       document.body.style.overflow = "";
     }
+
     return () => {
       document.body.style.overflow = "";
+      window.removeEventListener("keydown", handleKeyDown);
     };
   }, [mobileMenuOpen]);
 
@@ -44,7 +55,7 @@ export default function Navbar() {
       e.preventDefault();
       const targetElement = document.querySelector(href);
       if (targetElement) {
-        const headerOffset = 80;
+        const headerOffset = 76;
         const elementPosition = targetElement.getBoundingClientRect().top;
         const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
         window.scrollTo({
@@ -64,25 +75,45 @@ export default function Navbar() {
         left: 0,
         right: 0,
         zIndex: 1000,
-        transition: "all 0.3s ease",
-        padding: isScrolled ? "12px 0" : "18px 0",
-        backgroundColor: isScrolled ? "rgba(255, 255, 255, 0.94)" : "rgba(248, 249, 250, 0.85)",
-        backdropFilter: "blur(12px)",
+        transition: "background-color 0.25s ease, padding 0.25s ease, box-shadow 0.25s ease",
+        padding: isScrolled ? "10px 0" : "14px 0",
+        backgroundColor: isScrolled ? "rgba(255, 255, 255, 0.96)" : "rgba(248, 249, 250, 0.92)",
+        backdropFilter: "blur(14px)",
+        WebkitBackdropFilter: "blur(14px)",
         borderBottom: isScrolled ? "1px solid #E2E8F0" : "1px solid transparent"
       }}
     >
-      <div className="container" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+      <div
+        className="container"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: "12px"
+        }}
+      >
         {/* Brand Wordmark & Logo */}
         <a
           href="#hero"
           onClick={(e) => handleLinkClick(e, "#hero")}
-          style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none" }}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            textDecoration: "none",
+            flexShrink: 0
+          }}
           aria-label="Synergy Gym Homepage"
         >
           <img
             src={assets.logo}
             alt="Synergy Gym"
-            style={{ height: "42px", width: "auto" }}
+            onError={handleImageFallback}
+            style={{
+              height: "clamp(34px, 8vw, 42px)",
+              maxWidth: "clamp(150px, 46vw, 210px)",
+              width: "auto",
+              objectFit: "contain"
+            }}
           />
         </a>
 
@@ -92,7 +123,7 @@ export default function Navbar() {
           style={{ display: "none" }}
           aria-label="Main Navigation"
         >
-          <ul style={{ display: "flex", alignItems: "center", gap: "28px", listStyle: "none" }}>
+          <ul style={{ display: "flex", alignItems: "center", gap: "24px", listStyle: "none" }}>
             {navLinks.map((link) => (
               <li key={link.label}>
                 <a
@@ -116,7 +147,7 @@ export default function Navbar() {
         </nav>
 
         {/* Desktop CTA Buttons */}
-        <div className="desktop-cta" style={{ display: "none", alignItems: "center", gap: "14px" }}>
+        <div className="desktop-cta" style={{ display: "none", alignItems: "center", gap: "12px" }}>
           <a
             href={`tel:${BUSINESS_INFO.phoneDisplay.replace(/\s+/g, "")}`}
             style={{
@@ -141,19 +172,20 @@ export default function Navbar() {
             target="_blank"
             rel="noopener noreferrer"
             className="btn btn-whatsapp"
-            style={{ padding: "10px 20px", fontSize: "0.875rem" }}
+            style={{ padding: "9px 18px", fontSize: "0.875rem", minHeight: "40px" }}
           >
             <span>Join Synergy</span>
             <ArrowUpRight size={16} />
           </a>
         </div>
 
-        {/* Mobile Menu Hamburger Button */}
+        {/* Mobile Menu Hamburger Button (Min 44x44px touch target) */}
         <button
           className="mobile-toggle-btn"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+          aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
           aria-expanded={mobileMenuOpen}
+          aria-controls="mobile-navigation-drawer"
           style={{
             display: "flex",
             alignItems: "center",
@@ -163,91 +195,100 @@ export default function Navbar() {
             borderRadius: "var(--radius-md)",
             border: "1px solid var(--border-light)",
             backgroundColor: "var(--bg-surface)",
-            color: "var(--text-primary)"
+            color: "var(--text-primary)",
+            flexShrink: 0
           }}
         >
           {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
 
-      {/* Mobile Drawer Menu */}
-      <div
-        className="mobile-drawer"
-        style={{
-          position: "fixed",
-          top: "70px",
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: "rgba(255, 255, 255, 0.98)",
-          backdropFilter: "blur(20px)",
-          padding: "32px 24px 48px",
-          display: mobileMenuOpen ? "flex" : "none",
-          flexDirection: "column",
-          justifyContent: "space-between",
-          zIndex: 999,
-          overflowY: "auto",
-          borderTop: "1px solid var(--border-light)"
-        }}
-      >
-        <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: "20px" }}>
-          {navLinks.map((link) => (
-            <li key={link.label}>
-              <a
-                href={link.href}
-                onClick={(e) => handleLinkClick(e, link.href)}
-                style={{
-                  fontSize: "1.375rem",
-                  fontWeight: 800,
-                  fontFamily: "var(--font-heading)",
-                  color: "var(--text-primary)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  padding: "8px 0",
-                  borderBottom: "1px solid var(--border-light)"
-                }}
-              >
-                <span>{link.label}</span>
-                <ArrowUpRight size={18} style={{ color: "var(--text-muted)" }} />
-              </a>
-            </li>
-          ))}
-        </ul>
+      {/* Mobile Drawer Menu Overlay */}
+      {mobileMenuOpen && (
+        <div
+          id="mobile-navigation-drawer"
+          ref={drawerRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Mobile Navigation"
+          style={{
+            position: "fixed",
+            top: "64px",
+            left: 0,
+            right: 0,
+            bottom: 0,
+            height: "calc(100vh - 64px)",
+            backgroundColor: "rgba(255, 255, 255, 0.98)",
+            backdropFilter: "blur(20px)",
+            WebkitBackdropFilter: "blur(20px)",
+            padding: "24px 20px calc(24px + var(--sab))",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            zIndex: 999,
+            overflowY: "auto",
+            borderTop: "1px solid var(--border-light)"
+          }}
+        >
+          <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: "14px" }}>
+            {navLinks.map((link) => (
+              <li key={link.label}>
+                <a
+                  href={link.href}
+                  onClick={(e) => handleLinkClick(e, link.href)}
+                  style={{
+                    fontSize: "1.25rem",
+                    fontWeight: 800,
+                    fontFamily: "var(--font-heading)",
+                    color: "var(--text-primary)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    padding: "10px 0",
+                    borderBottom: "1px solid var(--border-light)",
+                    minHeight: "44px"
+                  }}
+                >
+                  <span>{link.label}</span>
+                  <ArrowUpRight size={18} style={{ color: "var(--text-muted)" }} />
+                </a>
+              </li>
+            ))}
+          </ul>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "14px", marginTop: "32px" }}>
-          <a
-            href={buildWhatsAppUrl(WHATSAPP_MESSAGES.GENERAL_ENQUIRY)}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn btn-whatsapp"
-            style={{ width: "100%", padding: "16px" }}
-          >
-            <span>Join Synergy on WhatsApp</span>
-            <ArrowUpRight size={18} />
-          </a>
+          <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginTop: "24px" }}>
+            <a
+              href={buildWhatsAppUrl(WHATSAPP_MESSAGES.GENERAL_ENQUIRY)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-whatsapp"
+              style={{ width: "100%", padding: "14px", minHeight: "48px" }}
+            >
+              <span>Join Synergy on WhatsApp</span>
+              <ArrowUpRight size={18} />
+            </a>
 
-          <a
-            href={`tel:${BUSINESS_INFO.phoneDisplay.replace(/\s+/g, "")}`}
-            className="btn btn-outline"
-            style={{ width: "100%", padding: "14px" }}
-          >
-            <Phone size={16} />
-            <span>Call {BUSINESS_INFO.phoneDisplay}</span>
-          </a>
+            <a
+              href={`tel:${BUSINESS_INFO.phoneDisplay.replace(/\s+/g, "")}`}
+              className="btn btn-outline"
+              style={{ width: "100%", padding: "12px", minHeight: "44px" }}
+            >
+              <Phone size={16} />
+              <span>Call {BUSINESS_INFO.phoneDisplay}</span>
+            </a>
 
-          <p style={{ textAlign: "center", fontSize: "0.8125rem", color: "var(--text-muted)", marginTop: "12px" }}>
-            Badwasia, Maderana Colony, Jodhpur • Est. 2015
-          </p>
+            <p style={{ textAlign: "center", fontSize: "0.8125rem", color: "var(--text-muted)", marginTop: "8px" }}>
+              Badwasia, Maderana Colony, Jodhpur • Est. 2015
+            </p>
+          </div>
         </div>
-      </div>
+      )}
 
       <style>{`
         @media (min-width: 992px) {
           .desktop-nav { display: block !important; }
           .desktop-cta { display: flex !important; }
           .mobile-toggle-btn { display: none !important; }
-          .mobile-drawer { display: none !important; }
         }
       `}</style>
     </header>

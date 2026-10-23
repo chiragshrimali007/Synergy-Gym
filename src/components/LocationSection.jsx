@@ -8,7 +8,7 @@ export default function LocationSection() {
     <section id="location" className="section" style={{ backgroundColor: "var(--bg-primary)" }}>
       <div className="container">
         {/* Section Header */}
-        <div style={{ textAlign: "center", maxWidth: "700px", margin: "0 auto 52px auto" }}>
+        <div style={{ textAlign: "center", maxWidth: "700px", margin: "0 auto 44px auto" }}>
           <div className="section-tag">
             <MapPin size={14} />
             <span>Visit Synergy Gym</span>
@@ -22,20 +22,12 @@ export default function LocationSection() {
         </div>
 
         {/* Location & Map Grid */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr",
-            gap: "36px",
-            alignItems: "stretch"
-          }}
-          className="location-grid"
-        >
+        <div className="location-grid">
           {/* Left Details Card */}
           <div
             className="card-surface"
             style={{
-              padding: "clamp(24px, 4vw, 40px)",
+              padding: "clamp(20px, 4vw, 36px)",
               display: "flex",
               flexDirection: "column",
               justifyContent: "space-between",
@@ -43,16 +35,16 @@ export default function LocationSection() {
             }}
           >
             <div>
-              <h3 style={{ fontSize: "1.5rem", fontWeight: 800, marginBottom: "24px" }}>
+              <h3 style={{ fontSize: "1.375rem", fontWeight: 800, marginBottom: "20px" }}>
                 Contact & Gym Hours
               </h3>
 
               {/* Address Block */}
-              <div style={{ display: "flex", gap: "16px", marginBottom: "28px" }}>
+              <div style={{ display: "flex", gap: "14px", marginBottom: "24px" }}>
                 <div
                   style={{
-                    width: "44px",
-                    height: "44px",
+                    width: "42px",
+                    height: "42px",
                     borderRadius: "var(--radius-md)",
                     backgroundColor: "var(--bg-accent-light)",
                     display: "flex",
@@ -61,30 +53,30 @@ export default function LocationSection() {
                     flexShrink: 0
                   }}
                 >
-                  <MapPin size={22} style={{ color: "var(--brand-green)" }} />
+                  <MapPin size={20} style={{ color: "var(--brand-green)" }} />
                 </div>
-                <div>
-                  <h4 style={{ fontSize: "0.9375rem", fontWeight: 800, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "4px" }}>
+                <div style={{ minWidth: 0 }}>
+                  <h4 style={{ fontSize: "0.875rem", fontWeight: 800, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "2px" }}>
                     Gym Address
                   </h4>
-                  <p style={{ fontSize: "1.0625rem", fontWeight: 700, color: "var(--text-primary)", lineHeight: 1.5 }}>
+                  <p style={{ fontSize: "1rem", fontWeight: 700, color: "var(--text-primary)", lineHeight: 1.45 }}>
                     {BUSINESS_INFO.address.line1}
                   </p>
-                  <p style={{ fontSize: "0.9375rem", color: "var(--text-secondary)" }}>
+                  <p style={{ fontSize: "0.875rem", color: "var(--text-secondary)" }}>
                     {BUSINESS_INFO.address.area}
                   </p>
-                  <p style={{ fontSize: "0.9375rem", color: "var(--text-secondary)" }}>
+                  <p style={{ fontSize: "0.875rem", color: "var(--text-secondary)" }}>
                     {BUSINESS_INFO.address.city}, {BUSINESS_INFO.address.state}, {BUSINESS_INFO.address.country}
                   </p>
                 </div>
               </div>
 
               {/* Phone & WhatsApp Block */}
-              <div style={{ display: "flex", gap: "16px", marginBottom: "28px" }}>
+              <div style={{ display: "flex", gap: "14px", marginBottom: "24px" }}>
                 <div
                   style={{
-                    width: "44px",
-                    height: "44px",
+                    width: "42px",
+                    height: "42px",
                     borderRadius: "var(--radius-md)",
                     backgroundColor: "var(--bg-accent-light)",
                     display: "flex",
@@ -93,10 +85,10 @@ export default function LocationSection() {
                     flexShrink: 0
                   }}
                 >
-                  <Phone size={22} style={{ color: "var(--brand-green)" }} />
+                  <Phone size={20} style={{ color: "var(--brand-green)" }} />
                 </div>
-                <div>
-                  <h4 style={{ fontSize: "0.9375rem", fontWeight: 800, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "4px" }}>
+                <div style={{ minWidth: 0 }}>
+                  <h4 style={{ fontSize: "0.875rem", fontWeight: 800, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "2px" }}>
                     Phone & WhatsApp
                   </h4>
                   <p style={{ fontSize: "1.125rem", fontWeight: 800, color: "var(--text-primary)" }}>
@@ -109,11 +101,11 @@ export default function LocationSection() {
               </div>
 
               {/* Operating Shifts Block */}
-              <div style={{ display: "flex", gap: "16px", marginBottom: "36px" }}>
+              <div style={{ display: "flex", gap: "14px", marginBottom: "32px" }}>
                 <div
                   style={{
-                    width: "44px",
-                    height: "44px",
+                    width: "42px",
+                    height: "42px",
                     borderRadius: "var(--radius-md)",
                     backgroundColor: "var(--bg-accent-light)",
                     display: "flex",
@@ -122,16 +114,16 @@ export default function LocationSection() {
                     flexShrink: 0
                   }}
                 >
-                  <Clock size={22} style={{ color: "var(--brand-green)" }} />
+                  <Clock size={20} style={{ color: "var(--brand-green)" }} />
                 </div>
-                <div>
-                  <h4 style={{ fontSize: "0.9375rem", fontWeight: 800, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "4px" }}>
+                <div style={{ minWidth: 0 }}>
+                  <h4 style={{ fontSize: "0.875rem", fontWeight: 800, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "2px" }}>
                     Daily Floor Hours
                   </h4>
-                  <div style={{ fontSize: "0.9375rem", color: "var(--text-primary)", fontWeight: 700, marginBottom: "4px" }}>
+                  <div style={{ fontSize: "0.875rem", color: "var(--text-primary)", fontWeight: 700, marginBottom: "2px" }}>
                     Morning Shift: <span style={{ fontWeight: 500, color: "var(--text-secondary)" }}>{BUSINESS_INFO.hours.morning}</span>
                   </div>
-                  <div style={{ fontSize: "0.9375rem", color: "var(--text-primary)", fontWeight: 700, marginBottom: "6px" }}>
+                  <div style={{ fontSize: "0.875rem", color: "var(--text-primary)", fontWeight: 700, marginBottom: "4px" }}>
                     Evening Shift: <span style={{ fontWeight: 500, color: "var(--text-secondary)" }}>{BUSINESS_INFO.hours.evening}</span>
                   </div>
                   <div style={{ fontSize: "0.8125rem", color: "var(--text-muted)" }}>
@@ -141,14 +133,14 @@ export default function LocationSection() {
               </div>
             </div>
 
-            {/* CTAs */}
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "12px" }}>
+            {/* Location CTAs */}
+            <div className="location-cta-group">
               <a
                 href={BUSINESS_INFO.googleMapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn btn-outline"
-                style={{ flex: 1, minWidth: "180px", padding: "12px 18px", fontSize: "0.875rem" }}
+                style={{ padding: "12px 16px", fontSize: "0.875rem", minHeight: "48px" }}
               >
                 <span>Open in Google Maps</span>
                 <ExternalLink size={15} />
@@ -159,7 +151,7 @@ export default function LocationSection() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn btn-whatsapp"
-                style={{ flex: 1, minWidth: "180px", padding: "12px 18px", fontSize: "0.875rem" }}
+                style={{ padding: "12px 16px", fontSize: "0.875rem", minHeight: "48px" }}
               >
                 <MessageCircle size={16} />
                 <span>Schedule a Visit</span>
@@ -168,21 +160,12 @@ export default function LocationSection() {
           </div>
 
           {/* Right Map Embed Stage */}
-          <div
-            style={{
-              borderRadius: "var(--radius-xl)",
-              overflow: "hidden",
-              border: "1px solid var(--border-light)",
-              boxShadow: "var(--shadow-md)",
-              minHeight: "420px",
-              backgroundColor: "#E2E8F0"
-            }}
-          >
+          <div className="map-embed-wrapper">
             <iframe
               title="Synergy Gym Location Map"
               width="100%"
               height="100%"
-              style={{ minHeight: "420px", border: 0 }}
+              style={{ minHeight: "320px", border: 0, width: "100%", height: "100%" }}
               loading="lazy"
               allowFullScreen
               referrerPolicy="no-referrer-when-downgrade"
@@ -193,9 +176,42 @@ export default function LocationSection() {
       </div>
 
       <style>{`
+        .location-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 24px;
+          align-items: stretch;
+        }
+
+        .location-cta-group {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        .map-embed-wrapper {
+          border-radius: var(--radius-xl);
+          overflow: hidden;
+          border: 1px solid var(--border-light);
+          box-shadow: var(--shadow-md);
+          min-height: 320px;
+          background-color: #E2E8F0;
+          width: 100%;
+        }
+
+        @media (min-width: 480px) {
+          .location-cta-group {
+            flex-direction: row;
+          }
+          .location-cta-group .btn {
+            flex: 1;
+          }
+        }
+
         @media (min-width: 992px) {
           .location-grid {
-            grid-template-columns: 1fr 1.2fr !important;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 36px;
           }
         }
       `}</style>

@@ -1,9 +1,16 @@
 /* ==========================================================================
-   SYNERGY GYM - DESIGN SYSTEM & STYLESHEET
-   Aesthetics: Premium Editorial Fitness, Light Warm Stone + Charcoal + Electric Lime
+   SYNERGY GYM - RESPONSIVE DESIGN SYSTEM & STYLESHEET
+   Mobile-First Architecture: 320px to 1440px+
+   Aesthetics: Premium Editorial Fitness, Light Stone + Charcoal + Electric Lime
    ========================================================================== */
 
 :root {
+  /* Safe-Area Insets for Notched Mobile Devices */
+  --sat: env(safe-area-inset-top, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
+  --sal: env(safe-area-inset-left, 0px);
+  --sar: env(safe-area-inset-right, 0px);
+
   /* Color Palette */
   --bg-primary: #F8F9FA;
   --bg-surface: #FFFFFF;
@@ -37,7 +44,7 @@
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
-  --shadow-hover: 0 25px 35px -10px rgba(15, 23, 42, 0.12), 0 10px 12px -5px rgba(15, 23, 42, 0.06);
+  --shadow-hover: 0 20px 30px -10px rgba(15, 23, 42, 0.12), 0 8px 10px -5px rgba(15, 23, 42, 0.06);
 
   /* Typography */
   --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -48,11 +55,11 @@
   --radius-sm: 8px;
   --radius-md: 14px;
   --radius-lg: 20px;
-  --radius-xl: 28px;
+  --radius-xl: 26px;
   --radius-full: 9999px;
 
   /* Header Height */
-  --header-height: 74px;
+  --header-height: 72px;
 }
 
 /* Base Reset & Box Sizing */
@@ -65,7 +72,9 @@
 html {
   scroll-behavior: smooth;
   text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
   -webkit-tap-highlight-color: transparent;
+  overflow-x: hidden;
 }
 
 body {
@@ -75,16 +84,13 @@ body {
   line-height: 1.6;
   font-size: 16px;
   overflow-x: hidden;
+  width: 100%;
+  min-width: 320px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Focus Visible for Accessibility */
-:focus-visible {
-  outline: 2px solid var(--brand-green);
-  outline-offset: 3px;
-}
-
+/* Ensure images & videos scale within their parent */
 img, video {
   max-width: 100%;
   height: auto;
@@ -96,30 +102,48 @@ button {
   border: none;
   background: none;
   font-family: inherit;
+  font-size: inherit;
+  touch-action: manipulation;
 }
 
 a {
   color: inherit;
   text-decoration: none;
+  touch-action: manipulation;
 }
 
-/* Headings */
+/* Accessible Focus States */
+:focus-visible {
+  outline: 2px solid var(--brand-green);
+  outline-offset: 3px;
+}
+
+/* Headings with Overflow Wrap Protection */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
   color: var(--text-primary);
   font-weight: 800;
   line-height: 1.15;
   letter-spacing: -0.02em;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
-/* Layout Utilities */
+/* Container System */
 .container {
   width: 100%;
   max-width: var(--container-max);
   margin-left: auto;
   margin-right: auto;
-  padding-left: 20px;
-  padding-right: 20px;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+@media (min-width: 480px) {
+  .container {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
 }
 
 @media (min-width: 768px) {
@@ -129,19 +153,28 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
+/* Section Spacing & Sticky Anchor Offset */
 .section {
-  padding-top: 80px;
-  padding-bottom: 80px;
+  padding-top: 64px;
+  padding-bottom: 64px;
+  scroll-margin-top: calc(var(--header-height) + 12px);
+}
+
+@media (min-width: 768px) {
+  .section {
+    padding-top: 88px;
+    padding-bottom: 88px;
+  }
 }
 
 @media (min-width: 1024px) {
   .section {
-    padding-top: 110px;
-    padding-bottom: 110px;
+    padding-top: 108px;
+    padding-bottom: 108px;
   }
 }
 
-/* Section Header Styles */
+/* Section Header Typography */
 .section-tag {
   display: inline-flex;
   align-items: center;
@@ -149,13 +182,15 @@ h1, h2, h3, h4, h5, h6 {
   font-size: 0.8125rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   color: var(--brand-green);
   background: var(--bg-accent-light);
   padding: 6px 14px;
   border-radius: var(--radius-full);
   margin-bottom: 16px;
   border: 1px solid rgba(22, 163, 74, 0.2);
+  max-width: 100%;
+  overflow-wrap: break-word;
 }
 
 .section-tag.dark {
@@ -165,37 +200,28 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .section-title {
-  font-size: 2.125rem;
+  font-size: clamp(1.75rem, 4.8vw, 3.125rem);
   line-height: 1.15;
   margin-bottom: 16px;
-}
-
-@media (min-width: 768px) {
-  .section-title {
-    font-size: 2.75rem;
-  }
-}
-
-@media (min-width: 1024px) {
-  .section-title {
-    font-size: 3.25rem;
-  }
+  letter-spacing: -0.025em;
+  text-transform: uppercase;
 }
 
 .section-description {
-  font-size: 1.0625rem;
+  font-size: clamp(0.9375rem, 1.8vw, 1.125rem);
   color: var(--text-muted);
   max-width: 640px;
-  margin-bottom: 48px;
+  margin-bottom: 40px;
+  line-height: 1.6;
 }
 
 @media (min-width: 768px) {
   .section-description {
-    font-size: 1.1875rem;
+    margin-bottom: 48px;
   }
 }
 
-/* Button System */
+/* Button System (Min 44x44px Touch Targets) */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -205,18 +231,20 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
   font-size: 0.9375rem;
   letter-spacing: 0.02em;
-  padding: 14px 26px;
+  padding: 13px 24px;
+  min-height: 48px;
   border-radius: var(--radius-full);
-  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   text-align: center;
-  white-space: nowrap;
+  user-select: none;
+  box-sizing: border-box;
 }
 
 .btn:active {
-  transform: scale(0.98);
+  transform: scale(0.97);
 }
 
-/* Primary Button - Dark Slate Charcoal with crisp white text */
+/* Primary Button - Dark Slate Charcoal */
 .btn-primary {
   background-color: var(--text-primary);
   color: #FFFFFF;
@@ -229,7 +257,7 @@ h1, h2, h3, h4, h5, h6 {
   transform: translateY(-2px);
 }
 
-/* WhatsApp Accent Button - Signature Energy Green */
+/* WhatsApp Button - Verified Energy Green */
 .btn-whatsapp {
   background-color: #16A34A;
   color: #FFFFFF;
@@ -242,7 +270,7 @@ h1, h2, h3, h4, h5, h6 {
   transform: translateY(-2px);
 }
 
-/* Electric Lime Button - High Energy Accent */
+/* Electric Lime Accent Button */
 .btn-lime {
   background-color: var(--brand-electric);
   color: #0F172A;
@@ -256,7 +284,7 @@ h1, h2, h3, h4, h5, h6 {
   transform: translateY(-2px);
 }
 
-/* Secondary Ghost/Outline Button */
+/* Outline Buttons */
 .btn-outline {
   background-color: transparent;
   color: var(--text-primary);
@@ -282,19 +310,23 @@ h1, h2, h3, h4, h5, h6 {
   transform: translateY(-2px);
 }
 
-/* Card Foundations */
+/* Card Surface Base */
 .card-surface {
   background: var(--bg-surface);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
-  transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
+  transition: transform 0.24s ease, box-shadow 0.24s ease, border-color 0.24s ease;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-.card-surface:hover {
-  box-shadow: var(--shadow-hover);
-  border-color: rgba(22, 163, 74, 0.3);
-  transform: translateY(-4px);
+@media (hover: hover) and (pointer: fine) {
+  .card-surface:hover {
+    box-shadow: var(--shadow-hover);
+    border-color: rgba(22, 163, 74, 0.3);
+    transform: translateY(-4px);
+  }
 }
 
 /* Badge Styles */
@@ -326,16 +358,16 @@ h1, h2, h3, h4, h5, h6 {
   color: #FFFFFF;
 }
 
-/* Sticky Header Transition */
+/* Sticky Navbar Transitions */
 .navbar-scrolled {
-  background-color: rgba(255, 255, 255, 0.94) !important;
-  backdrop-filter: blur(12px) !important;
-  -webkit-backdrop-filter: blur(12px) !important;
+  background-color: rgba(255, 255, 255, 0.96) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06) !important;
-  border-bottom: 1px solid rgba(226, 232, 240, 0.8) !important;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.9) !important;
 }
 
-/* Smooth Reduced Motion Support */
+/* Reduced Motion Preference Support */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;

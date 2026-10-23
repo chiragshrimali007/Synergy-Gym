@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { assets } from "../config/assets";
 import { BUSINESS_INFO } from "../config/business";
 import { WHATSAPP_MESSAGES, buildWhatsAppUrl } from "../utils/whatsapp";
+import { handleImageFallback } from "../utils/media";
 import {
   Dumbbell,
   ShieldCheck,
@@ -10,7 +11,7 @@ import {
   Award,
   Sparkles,
   Play,
-  Pause,
+  RotateCcw,
   ArrowUpRight,
   Eye
 } from "lucide-react";
@@ -18,19 +19,30 @@ import {
 export default function FacilitiesSection() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [videoError, setVideoError] = useState(false);
-  const videoRef = React.useRef(null);
+  const [playFailed, setPlayFailed] = useState(false);
+  const videoRef = useRef(null);
 
-  const togglePlay = () => {
+  const handlePlayRequest = () => {
     if (!videoRef.current) return;
-    if (isPlaying) {
-      videoRef.current.pause();
-      setIsPlaying(false);
-    } else {
-      videoRef.current
-        .play()
-        .then(() => setIsPlaying(true))
-        .catch(() => setVideoError(true));
-    }
+    setPlayFailed(false);
+    videoRef.current
+      .play()
+      .then(() => {
+        setIsPlaying(true);
+      })
+      .catch((err) => {
+        console.warn("Video playback was interrupted or blocked:", err.message);
+        setPlayFailed(true);
+      });
+  };
+
+  const handlePause = () => {
+    setIsPlaying(false);
+  };
+
+  const handlePlay = () => {
+    setIsPlaying(true);
+    setPlayFailed(false);
   };
 
   const renderIcon = (name) => {
@@ -55,7 +67,7 @@ export default function FacilitiesSection() {
     <section id="experience" className="section" style={{ backgroundColor: "var(--bg-primary)" }}>
       <div className="container">
         {/* Section Header */}
-        <div style={{ maxWidth: "700px", marginBottom: "52px" }}>
+        <div style={{ maxWidth: "700px", marginBottom: "44px" }}>
           <div className="section-tag">
             <Eye size={14} />
             <span>The Synergy Environment</span>
@@ -69,179 +81,125 @@ export default function FacilitiesSection() {
         </div>
 
         {/* Demo Video & Floor Experience Showcase */}
-        <div
-          style={{
-            position: "relative",
-            borderRadius: "var(--radius-xl)",
-            overflow: "hidden",
-            backgroundColor: "#0B0F19",
-            border: "1px solid var(--border-light)",
-            boxShadow: "var(--shadow-xl)",
-            marginBottom: "56px"
-          }}
-        >
-          <div style={{ position: "relative", aspectRatio: "16 / 9", maxHeight: "560px", width: "100%" }}>
+        <div className="video-showcase-wrapper">
+          <div className="video-aspect-container">
             {!videoError && assets.gymTourVideo ? (
               <video
                 ref={videoRef}
                 poster={assets.videoPoster || assets.gymInterior}
+                controls={isPlaying}
                 playsInline
                 preload="metadata"
-                onPlay={() => setIsPlaying(true)}
-                onPause={() => setIsPlaying(false)}
+                onPlay={handlePlay}
+                onPause={handlePause}
                 onError={() => setVideoError(true)}
                 style={{ width: "100%", height: "100%", objectFit: "cover" }}
               >
                 <source src={assets.gymTourVideo} type="video/mp4" />
+                Your browser does not support HTML video playback.
               </video>
             ) : (
-              /* Fallback visual if video is unavailable */
+              /* Fallback visual if video is genuinely missing */
               <img
                 src={assets.videoPoster || assets.gymInterior}
                 alt="Synergy Gym Floor Experience"
+                onError={handleImageFallback}
                 style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                onError={(e) => {
-                  if (e.currentTarget.src !== assets.heroFallback) {
-                    e.currentTarget.src = assets.heroFallback;
-                  }
-                }}
               />
             )}
 
-            {/* Cinematic Gradient */}
-            <div
-              style={{
-                position: "absolute",
-                inset: 0,
-                background: isPlaying
-                  ? "transparent"
-                  : "linear-gradient(180deg, rgba(11, 15, 25, 0.2) 0%, rgba(11, 15, 25, 0.8) 100%)",
-                transition: "background 0.3s ease",
-                pointerEvents: isPlaying ? "none" : "auto"
-              }}
-            />
-
-            {/* Video Controls & Overlay */}
-            {!isPlaying && (
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "space-between",
-                  padding: "clamp(20px, 4vw, 40px)",
-                  zIndex: 2
-                }}
-              >
-                {/* Badge Top Left */}
+            {/* Video Initial Poster Overlay (Shown only before video is actively playing) */}
+            {!isPlaying && !videoError && assets.gymTourVideo && (
+              <div className="video-poster-overlay">
                 <div style={{ display: "flex", justifyContent: "flex-start" }}>
-                  <span className="badge-pill badge-lime">
+                  <span className="badge-pill badge-lime" style={{ fontSize: "0.75rem" }}>
                     Synergy Floor Preview
                   </span>
                 </div>
 
-                {/* Center Action Button */}
+                {/* Center Play Button */}
                 <div style={{ alignSelf: "center", textAlign: "center" }}>
-                  {!videoError && assets.gymTourVideo ? (
-                    <button
-                      onClick={togglePlay}
-                      aria-label="Play Gym Floor Tour Video"
-                      style={{
-                        width: "72px",
-                        height: "72px",
-                        borderRadius: "50%",
-                        backgroundColor: "var(--brand-electric)",
-                        color: "#0F172A",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        boxShadow: "0 0 30px rgba(196, 247, 37, 0.5)",
-                        transition: "transform 0.2s ease"
-                      }}
-                      onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.08)")}
-                      onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
-                    >
-                      <Play size={30} fill="#0F172A" style={{ marginLeft: "4px" }} />
-                    </button>
-                  ) : (
-                    <a
-                      href={buildWhatsAppUrl(WHATSAPP_MESSAGES.VISIT_THE_GYM)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="btn btn-lime"
-                      style={{ padding: "14px 28px" }}
-                    >
-                      <span>Schedule a Visit in Person</span>
-                      <ArrowUpRight size={18} />
-                    </a>
+                  <button
+                    onClick={handlePlayRequest}
+                    aria-label={playFailed ? "Retry playing video" : "Play Gym Tour Video"}
+                    className="video-play-btn"
+                  >
+                    {playFailed ? <RotateCcw size={28} /> : <Play size={28} fill="#0F172A" style={{ marginLeft: "3px" }} />}
+                  </button>
+                  {playFailed && (
+                    <p style={{ color: "#FFFFFF", fontSize: "0.8125rem", marginTop: "10px", fontWeight: 600 }}>
+                      Tap again to play video
+                    </p>
                   )}
                 </div>
 
-                {/* Bottom Bar Info */}
                 <div style={{ color: "#FFFFFF" }}>
-                  <h3 style={{ color: "#FFFFFF", fontSize: "1.375rem", marginBottom: "6px" }}>
+                  <h3 style={{ color: "#FFFFFF", fontSize: "clamp(1.125rem, 3vw, 1.375rem)", marginBottom: "4px" }}>
                     Verified Local Training Facility
                   </h3>
-                  <p style={{ color: "var(--text-inverse-muted)", fontSize: "0.875rem", maxWidth: "500px" }}>
+                  <p style={{ color: "var(--text-inverse-muted)", fontSize: "0.8125rem", maxWidth: "480px", lineHeight: 1.4 }}>
                     Equipped with heavy dumbbells, multi-angle benches, Olympic bars, and dedicated cardio stations.
                   </p>
                 </div>
               </div>
             )}
 
-            {/* Video Pause Toggle on Screen Click when Playing */}
-            {isPlaying && (
-              <button
-                onClick={togglePlay}
-                aria-label="Pause Video"
+            {/* Static Action if Video is Missing */}
+            {videoError && (
+              <div
                 style={{
                   position: "absolute",
                   bottom: "20px",
+                  left: "20px",
                   right: "20px",
-                  padding: "10px 18px",
-                  backgroundColor: "rgba(15, 23, 42, 0.8)",
-                  backdropFilter: "blur(8px)",
-                  borderRadius: "var(--radius-full)",
-                  color: "#FFFFFF",
                   display: "flex",
+                  justifyContent: "space-between",
                   alignItems: "center",
-                  gap: "8px",
-                  fontSize: "0.8125rem",
-                  fontWeight: 700
+                  flexWrap: "wrap",
+                  gap: "12px",
+                  backgroundColor: "rgba(15, 23, 42, 0.9)",
+                  padding: "14px 20px",
+                  borderRadius: "var(--radius-md)",
+                  color: "#FFFFFF"
                 }}
               >
-                <Pause size={14} />
-                <span>Pause</span>
-              </button>
+                <div>
+                  <div style={{ fontWeight: 700, fontSize: "0.9375rem" }}>Visit Synergy Gym in Person</div>
+                  <div style={{ fontSize: "0.75rem", color: "var(--text-inverse-muted)" }}>Walk-in tours open during floor hours</div>
+                </div>
+                <a
+                  href={buildWhatsAppUrl(WHATSAPP_MESSAGES.VISIT_THE_GYM)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn-lime"
+                  style={{ padding: "8px 16px", fontSize: "0.8125rem", minHeight: "38px" }}
+                >
+                  <span>Book Tour</span>
+                  <ArrowUpRight size={14} />
+                </a>
+              </div>
             )}
           </div>
         </div>
 
         {/* Verified Facility Features Grid */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-            gap: "24px"
-          }}
-        >
+        <div className="facilities-grid">
           {BUSINESS_INFO.facilities.map((fac, idx) => (
             <div
               key={idx}
               className="card-surface"
               style={{
-                padding: "28px",
+                padding: "22px",
                 display: "flex",
-                gap: "20px",
+                gap: "16px",
                 alignItems: "flex-start",
                 borderRadius: "var(--radius-lg)"
               }}
             >
               <div
                 style={{
-                  width: "48px",
-                  height: "48px",
+                  width: "44px",
+                  height: "44px",
                   borderRadius: "var(--radius-md)",
                   backgroundColor: "var(--bg-accent-light)",
                   display: "flex",
@@ -257,15 +215,15 @@ export default function FacilitiesSection() {
               <div>
                 <h3
                   style={{
-                    fontSize: "1.0625rem",
+                    fontSize: "1rem",
                     fontWeight: 800,
-                    marginBottom: "8px",
+                    marginBottom: "6px",
                     color: "var(--text-primary)"
                   }}
                 >
                   {fac.title}
                 </h3>
-                <p style={{ fontSize: "0.875rem", color: "var(--text-muted)", lineHeight: 1.55 }}>
+                <p style={{ fontSize: "0.875rem", color: "var(--text-muted)", lineHeight: 1.5 }}>
                   {fac.description}
                 </p>
               </div>
@@ -273,6 +231,70 @@ export default function FacilitiesSection() {
           ))}
         </div>
       </div>
+
+      <style>{`
+        .video-showcase-wrapper {
+          position: relative;
+          border-radius: var(--radius-xl);
+          overflow: hidden;
+          background-color: #0B0F19;
+          border: 1px solid var(--border-light);
+          box-shadow: var(--shadow-xl);
+          margin-bottom: 48px;
+        }
+
+        .video-aspect-container {
+          position: relative;
+          aspect-ratio: 16 / 9;
+          max-height: 520px;
+          width: 100%;
+          background-color: #0F172A;
+        }
+
+        .video-poster-overlay {
+          position: absolute;
+          inset: 0;
+          display: flex;
+          flex-direction: column;
+          justifyContent: space-between;
+          padding: clamp(16px, 3.5vw, 36px);
+          background: linear-gradient(180deg, rgba(11, 15, 25, 0.3) 0%, rgba(11, 15, 25, 0.85) 100%);
+          z-index: 2;
+        }
+
+        .video-play-btn {
+          width: 64px;
+          height: 64px;
+          border-radius: 50%;
+          background-color: var(--brand-electric);
+          color: #0F172A;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: 0 0 24px rgba(196, 247, 37, 0.45);
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .video-play-btn:active {
+          transform: scale(0.92);
+        }
+
+        .facilities-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(min(100%, 270px), 1fr));
+          gap: 18px;
+        }
+
+        @media (min-width: 768px) {
+          .video-play-btn {
+            width: 72px;
+            height: 72px;
+          }
+          .facilities-grid {
+            gap: 24px;
+          }
+        }
+      `}</style>
     </section>
   );
 }

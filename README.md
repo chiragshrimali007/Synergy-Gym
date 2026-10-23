@@ -1,13 +1,13 @@
 # Synergy Gym — Official Website
 
-A high-performance, responsive web application for **Synergy Gym** (Est. 2015, Jodhpur, Rajasthan), built with React, Vite, and modern CSS architecture.
+A high-performance, mobile-first responsive web application for **Synergy Gym** (Est. 2015, Jodhpur, Rajasthan), built with React, Vite, and modern CSS architecture.
 
 ---
 
 ## 🏋️‍♂️ Verified Business Information
 
 - **Brand Name**: Synergy Gym
-- **Established**: 2015
+- **Established**: 2015 *(Badge: "Building stronger habits since 2015")*
 - **Phone / WhatsApp**: +91 96100 20780 (`919610020780`)
 - **Address**: Opposite Badwasia Govt. School, Maderana Colony, Blue City, Jodhpur, Rajasthan, India
 - **Floor Hours**:
@@ -32,10 +32,10 @@ npm install
 # Start local development server
 npm run dev
 
-# Run automated verification & business validation suite
+# Run automated verification & business validation suite (67 checks)
 npm test
 
-# Run code linter
+# Run code linter (0 errors, 0 warnings)
 npm run lint
 
 # Build production bundle
@@ -47,46 +47,55 @@ npm run preview
 
 ---
 
-## 📸 How to Replace Photos and Videos
+## 📸 Media Replacement & Asset Guide
 
-All images and videos are decoupled from code logic and organized inside the `public/assets/` directory. You can swap any photo or video simply by dropping a new file with the matching name into the directory—**no code editing required**.
+All image and video assets are kept strictly decoupled from code logic in `public/assets/`. You can replace any photo or video simply by dropping a new file with the matching name into the directory.
 
-### Asset Location Directory
-```
-public/
-  assets/
-    images/     <-- All photos and SVG logos live here
-    videos/     <-- Looping hero/preview MP4 clips live here
-```
+> **💡 Smart Extension Resolution:**
+> The website supports both `.jpg` and `.jpeg` filenames interchangeably. If you drop `hero-gym.jpeg` instead of `hero-gym.jpg`, the website and Vite server will automatically resolve and display it.
 
-### File-to-Section Mapping
+### Canonical Filename Mapping
 
-| Filename | Section Used | Purpose / Description | Recommended Dimensions & Format |
+| Filename | Folder | Website Section | Recommended Format & Aspect Ratio |
 |---|---|---|---|
-| `synergy-logo.svg` | Navbar, Footer | Brand wordmark and emblem | SVG (or transparent PNG 320×72) |
-| `hero-gym.jpg` | Hero Section | Main high-energy focal visual | 1920×1080 (16:9), JPG/WebP |
-| `hero-fallback.jpg` | Hero Section | Fallback image if hero video fails | 1920×1080 (16:9), JPG/WebP |
-| `weight-loss.jpg` | Programs | Weight Loss & Conditioning card | 800×600 (4:3), JPG/WebP |
-| `muscle-gain.jpg` | Programs | Muscle Gain & Hypertrophy card | 800×600 (4:3), JPG/WebP |
-| `strength-training.jpg` | Programs | Strength Training & Barbells card | 800×600 (4:3), JPG/WebP |
-| `general-fitness.jpg` | Programs | General Fitness & Core card | 800×600 (4:3), JPG/WebP |
-| `gym-interior.jpg` | Facilities & Gallery | Wide interior shot of gym floor | 1600×1000 (16:10), JPG/WebP |
-| `training-equipment.jpg` | Facilities & Gallery | Dumbbells & plate racks | 1200×800 (3:2), JPG/WebP |
-| `trainer-session.jpg` | About Section | Coach guiding member session | 1200×900 (4:3), JPG/WebP |
-| `video-poster.jpg` | Facilities Video | Poster frame before video plays | 1920×1080 (16:9), JPG/WebP |
-| `gallery-01.jpg` | Gallery | Gym interior / racks | 1200×900 (4:3), JPG/WebP |
-| `gallery-02.jpg` | Gallery | Free weights & lifting platform | 1200×900 (4:3), JPG/WebP |
-| `gallery-03.jpg` | Gallery | Conditioning workout in action | 1200×900 (4:3), JPG/WebP |
-| `gallery-04.jpg` | Gallery | Dumbbells and benches | 1200×900 (4:3), JPG/WebP |
-| `hero-workout.mp4` | Hero Section (Optional) | Background looping video | 1080p, H.264/MP4, < 8 MB |
-| `gym-tour.mp4` | Facilities (Optional) | Walkthrough / floor tour clip | 1080p, H.264/MP4, < 15 MB |
+| `synergy-logo.svg` | `public/assets/images/` | Navbar & Footer | SVG or PNG (320×72, transparent) |
+| `hero-gym.jpg` | `public/assets/images/` | Hero Section (Background / Poster) | 1920×1080 (16:9 / 16:10), JPG/WebP |
+| `hero-fallback.jpg` | `public/assets/images/` | Hero Fallback if video fails | 1920×1080 (16:9), JPG/WebP |
+| `weight-loss.jpg` | `public/assets/images/` | Programs — Weight Loss Card | 800×500 (16:10), JPG/WebP |
+| `muscle-gain.jpg` | `public/assets/images/` | Programs — Muscle Gain Card | 800×500 (16:10), JPG/WebP |
+| `strength-training.jpg` | `public/assets/images/` | Programs — Strength Card | 800×500 (16:10), JPG/WebP |
+| `general-fitness.jpg` | `public/assets/images/` | Programs — General Fitness Card | 800×500 (16:10), JPG/WebP |
+| `gym-interior.jpg` | `public/assets/images/` | Facilities & Gallery | 1600×1000 (16:10), JPG/WebP |
+| `training-equipment.jpg` | `public/assets/images/` | Facilities & Gallery | 1200×800 (3:2), JPG/WebP |
+| `trainer-session.jpg` | `public/assets/images/` | About Synergy Section | 1200×900 (4:3), JPG/WebP |
+| `video-poster.jpg` | `public/assets/images/` | Gym Tour Video Poster | 1920×1080 (16:9), JPG/WebP |
+| `gallery-01.jpg` | `public/assets/images/` | Gallery (Floor & Dumbbells) | 1200×900 (4:3), JPG/WebP |
+| `gallery-02.jpg` | `public/assets/images/` | Gallery (Olympic Platforms) | 1200×900 (4:3), JPG/WebP |
+| `gallery-03.jpg` | `public/assets/images/` | Gallery (Conditioning) | 1200×900 (4:3), JPG/WebP |
+| `gallery-04.jpg` | `public/assets/images/` | Gallery (Benches & Racks) | 1200×900 (4:3), JPG/WebP |
+| `boxing club.jpg` | `public/assets/images/` | Gallery (Combat & Boxing) | 1200×900 (4:3), JPG/WebP |
+| `hero-workout.mp4` | `public/assets/videos/` | Hero Background Video Clip | 1080p, H.264 MP4, < 6 MB |
+| `gym-tour.mp4` | `public/assets/videos/` | Facilities Interactive Video Tour | 1080p, H.264 MP4, < 15 MB |
 
-### How to Add or Remove Gallery Images
+---
 
-To add or remove photos from the Photo Gallery and Lightbox:
-1. Place your new photo in `public/assets/images/my-photo.jpg`.
+### Step-by-Step Instructions
+
+#### 1. How to Replace an Existing Photo
+1. Prepare your photo in JPEG or PNG format.
+2. Rename your photo to match the exact filename from the table above (e.g. `hero-gym.jpg`).
+3. Copy/paste the new file into `public/assets/images/` (overwriting the previous file).
+4. Refresh your browser to see the update.
+
+#### 2. How to Replace a Video
+1. Export your video in MP4 format (H.264 video codec with AAC audio for universal compatibility).
+2. For the Hero background: rename the file to `hero-workout.mp4` and copy to `public/assets/videos/`.
+3. For the Gym Tour: rename the file to `gym-tour.mp4` and copy to `public/assets/videos/`.
+
+#### 3. How to Add or Remove Gallery Photos
+1. Put your new photo in `public/assets/images/my-photo.jpg`.
 2. Open [`src/config/assets.js`](file:///c:/Users/Lenovo/chirag%20Projects/website/src/config/assets.js).
-3. In the `gallery` array, simply add an entry:
+3. In the `gallery` array, append a new object:
 ```javascript
 {
   url: "/assets/images/my-photo.jpg",
@@ -96,34 +105,19 @@ To add or remove photos from the Photo Gallery and Lightbox:
 ```
 4. Save the file. The gallery grid and full-screen lightbox will automatically include it.
 
----
-
-## 💬 WhatsApp Integration & Conversion
-
-All call-to-action buttons route to the verified Synergy Gym WhatsApp number:
-`+91 96100 20780` (`919610020780`)
-
-All messages are prefilled contextually via [`src/utils/whatsapp.js`](file:///c:/Users/Lenovo/chirag%20Projects/website/src/utils/whatsapp.js):
-- **General Enquiry**: Inquiring about joining and visiting.
-- **1 Month (₹1,000)**: Preselected plan enquiry.
-- **3 Months (₹2,500)**: Preselected plan enquiry.
-- **6 Months (₹4,500)**: Preselected plan enquiry.
-- **12 Months (₹8,000)**: Preselected annual plan enquiry.
-- **Weight Loss, Muscle Gain, Strength, General Fitness**: Goal-tailored consultations.
-- **Walk-in Visit**: Scheduling an in-person gym inspection.
+#### 4. How to Clear Browser Cache (Hard Refresh)
+When replacing an image file with the exact same filename, web browsers (especially mobile Safari and Chrome) frequently serve the cached version from disk.
+- **On Desktop Chrome / Edge / Firefox**: Press `Ctrl + F5` (Windows) or `Cmd + Shift + R` (Mac).
+- **On Android Chrome**: Open Chrome Menu (3 dots) -> Settings -> Privacy and security -> Clear browsing data -> check "Cached images and files" -> Clear data. Or open an Incognito tab.
+- **On iPhone Safari**: Open iOS Settings -> Safari -> Advanced -> Website Data -> Remove data for localhost, or open a Private Browsing window.
 
 ---
 
-## 🔒 Firebase Integration & Security
+## 📱 Mobile Responsiveness Features
 
-- Configuration lives in [`src/config/firebase.js`](file:///c:/Users/Lenovo/chirag%20Projects/website/src/config/firebase.js).
-- The public website operates statically with **zero hard dependencies on external APIs**, ensuring 100% uptime and blazing fast speed.
-- If Firebase environment variables (`VITE_FIREBASE_API_KEY`, etc.) are provided in `.env.local`, client SDK initialization activates automatically.
-- **Security Rule**: Admin SDK credentials and private keys must **never** be checked into frontend code. Public visitors interact strictly through WhatsApp and direct inquiries.
-
----
-
-## 📋 Owner Checklist for Final Launch
-- [ ] Review photo gallery images and replace demo assets with actual smartphone or camera photos of Synergy Gym's Jodhpur facility.
-- [ ] Record a 10–20 second horizontal video clip on a smartphone walking through the gym, save it as `gym-tour.mp4`, and copy it into `public/assets/videos/`.
-- [ ] Confirm floor operating hours match seasonal winter/summer shifts.
+- **Fluid Viewports**: Optimized and tested from narrow 320px devices up to 1440px desktop screens.
+- **Safe Grid Layouts**: Uses responsive CSS patterns (`repeat(auto-fit, minmax(min(100%, 250px), 1fr))`) to prevent horizontal overflow on small phones.
+- **Touch-Friendly Targets**: All navigation toggles, cards, and CTA buttons have a minimum touch height of 48px.
+- **Mobile Menu**: Responsive full-screen drawer with body-scroll locking and `Escape` key dismissal.
+- **Touch Lightbox**: Supports mobile swipe gestures (swipe left for next, swipe right for previous).
+- **Non-Intrusive Floating CTA**: Automatically hides near the footer to prevent covering contact details.

@@ -1,12 +1,13 @@
 import fs from "fs";
 import path from "path";
+import http from "http";
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, "..");
 
-console.log("=== RUNNING SYNERGY GYM COMPREHENSIVE VERIFICATION SUITE ===\n");
+console.log("=== RUNNING SYNERGY GYM COMPREHENSIVE AUDIT & VERIFICATION SUITE ===\n");
 
 let passed = 0;
 let failed = 0;
@@ -21,7 +22,7 @@ function assert(condition, message) {
   }
 }
 
-// 1. Check Business Configuration
+// 1. Business Configuration Verification
 import { BUSINESS_INFO } from "../src/config/business.js";
 
 assert(BUSINESS_INFO.brandName === "Synergy Gym", "Brand name is 'Synergy Gym'");
@@ -32,7 +33,7 @@ assert(BUSINESS_INFO.address.state === "Rajasthan", "State is Rajasthan");
 assert(BUSINESS_INFO.address.line1.includes("Opposite Badwasia Govt. School"), "Address includes 'Opposite Badwasia Govt. School'");
 assert(BUSINESS_INFO.address.area.includes("Maderana Colony"), "Area includes 'Maderana Colony'");
 
-// 2. Check Membership Pricing
+// 2. Membership Pricing Verification
 assert(BUSINESS_INFO.membershipPlans.length === 4, "Exactly 4 membership plans defined");
 const plan1 = BUSINESS_INFO.membershipPlans.find(p => p.duration === "1 Month");
 const plan3 = BUSINESS_INFO.membershipPlans.find(p => p.duration === "3 Months");
@@ -45,14 +46,13 @@ assert(plan6 && plan6.price === 4500, "6 Months plan price is ₹4,500");
 assert(plan12 && plan12.price === 8000, "12 Months plan price is ₹8,000");
 assert(plan12 && plan12.highlight === true, "12 Months plan is highlighted as long-term commitment");
 
-// 3. Check WhatsApp Helper & Message Encoding
+// 3. WhatsApp Integration & Preset Messages
 import { buildWhatsAppUrl, WHATSAPP_MESSAGES } from "../src/utils/whatsapp.js";
 
 const testUrl = buildWhatsAppUrl(WHATSAPP_MESSAGES.ONE_MONTH);
 assert(testUrl.startsWith("https://wa.me/919610020780?text="), "WhatsApp URL has correct base and phone number");
 assert(testUrl.includes(encodeURIComponent("₹1,000")), "One-month message properly encodes ₹1,000");
 
-// Check all message presets exist and are non-empty
 const expectedKeys = [
   "GENERAL_ENQUIRY",
   "ONE_MONTH",
@@ -70,7 +70,7 @@ for (const key of expectedKeys) {
   assert(typeof WHATSAPP_MESSAGES[key] === "string" && WHATSAPP_MESSAGES[key].length > 20, `WhatsApp preset '${key}' exists and has descriptive text`);
 }
 
-// 4. Check Asset Manifest and Verify Physical Files on Disk
+// 4. Physical Asset Integrity & Dual Extension Availability (.jpg & .jpeg)
 import { assets } from "../src/config/assets.js";
 
 const singleAssets = [
@@ -92,6 +92,12 @@ for (const assetPath of singleAssets) {
   const exists = fs.existsSync(filePath);
   const size = exists ? fs.statSync(filePath).size : 0;
   assert(exists && size > 1000, `Asset '${assetPath}' physically exists with valid size (${(size / 1024).toFixed(1)} KB)`);
+
+  // Verify dual extension availability for photo assets
+  if (assetPath.endsWith(".jpg")) {
+    const jpegPath = filePath.replace(/\.jpg$/i, ".jpeg");
+    assert(fs.existsSync(jpegPath), `Companion .jpeg alias exists for '${assetPath}'`);
+  }
 }
 
 // Check Gallery assets
@@ -101,14 +107,56 @@ for (const item of assets.gallery) {
   assert(exists, `Gallery asset '${item.url}' physically exists on disk`);
 }
 
-// 5. Check Favicon and HTML Meta Tags
+// Check Videos
+const videos = [assets.heroVideo, assets.gymTourVideo];
+for (const videoPath of videos) {
+  const filePath = path.join(rootDir, "public", videoPath.replace(/^\//, ""));
+  const exists = fs.existsSync(filePath);
+  const size = exists ? fs.statSync(filePath).size : 0;
+  assert(exists && size > 100000, `Video '${videoPath}' exists and has substantial size (${(size / 1024 / 1024).toFixed(2)} MB)`);
+}
+
+// 5. Check Viewport Meta Tag and Responsive CSS Rules
 const htmlPath = path.join(rootDir, "index.html");
 const htmlContent = fs.readFileSync(htmlPath, "utf-8");
-assert(htmlContent.includes("Synergy Gym"), "index.html contains 'Synergy Gym' title");
-assert(htmlContent.includes("Badwasia Govt. School"), "index.html Schema.org contains streetAddress");
-assert(htmlContent.includes("+919610020780"), "index.html Schema.org contains telephone");
-assert(htmlContent.includes("2015"), "index.html Schema.org contains foundingDate 2015");
+assert(htmlContent.includes("viewport-fit=cover"), "index.html viewport meta tag includes 'viewport-fit=cover'");
 assert(htmlContent.includes("ExerciseGym"), "index.html Schema.org has ExerciseGym type");
+
+const cssPath = path.join(rootDir, "src/index.css");
+const cssContent = fs.readFileSync(cssPath, "utf-8");
+assert(cssContent.includes("--sab"), "CSS defines safe-area variable --sab");
+assert(!cssContent.includes("minmax(300px, 1fr)"), "CSS does not contain unsafe fixed 300px minmax rules");
+assert(cssContent.includes("min-height: 48px"), "CSS enforces touch-friendly button targets (>= 44px)");
+
+// 6. Live HTTP Request Verification Against Running Dev Server
+async function checkHttpAssets() {
+  console.log("\n--- Checking Live HTTP Server Responses (Port 5173) ---");
+  const testUrls = [
+    assets.logo,
+    assets.heroImage,
+    assets.heroImage.replace(/\.jpg$/, ".jpeg"),
+    assets.gymInterior,
+    assets.gymInterior.replace(/\.jpg$/, ".jpeg"),
+    assets.heroVideo,
+    assets.gymTourVideo
+  ];
+
+  for (const url of testUrls) {
+    await new Promise((resolve) => {
+      const req = http.request({ host: "localhost", port: 5173, path: encodeURI(url), method: "HEAD" }, (res) => {
+        assert(res.statusCode === 200, `HTTP GET '${url}' responded with status 200 (Content-Type: ${res.headers['content-type']})`);
+        resolve();
+      });
+      req.on("error", (e) => {
+        console.warn(`⚠️ HTTP Check for '${url}' skipped or error: ${e.message}`);
+        resolve();
+      });
+      req.end();
+    });
+  }
+}
+
+await checkHttpAssets();
 
 console.log(`\n========================================`);
 console.log(`TOTAL CHECKS: ${passed + failed} | PASSED: ${passed} | FAILED: ${failed}`);

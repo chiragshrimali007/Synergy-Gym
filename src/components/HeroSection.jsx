@@ -1,17 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { assets } from "../config/assets";
 import { BUSINESS_INFO } from "../config/business";
 import { WHATSAPP_MESSAGES, buildWhatsAppUrl } from "../utils/whatsapp";
+import { handleImageFallback } from "../utils/media";
 import { ArrowUpRight, MessageCircle, MapPin, Calendar } from "lucide-react";
 
 export default function HeroSection() {
   const [videoError, setVideoError] = useState(false);
+  const videoRef = useRef(null);
+
+  // Ensure DOM video.muted = true to comply with strict mobile autoplay policies
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.muted = true;
+      videoRef.current.play().catch(() => {
+        // Autoplay may be restricted by battery saver or policy; poster remains visible
+      });
+    }
+  }, []);
 
   const scrollToMembership = (e) => {
     e.preventDefault();
     const el = document.getElementById("membership");
     if (el) {
-      const offset = 80;
+      const offset = 76;
       const pos = el.getBoundingClientRect().top + window.pageYOffset - offset;
       window.scrollTo({ top: pos, behavior: "smooth" });
     }
@@ -22,48 +34,43 @@ export default function HeroSection() {
       id="hero"
       style={{
         position: "relative",
-        paddingTop: "calc(var(--header-height) + 40px)",
-        paddingBottom: "80px",
+        paddingTop: "calc(var(--header-height) + 24px)",
+        paddingBottom: "56px",
         overflow: "hidden",
         backgroundColor: "var(--bg-primary)"
       }}
     >
       <div className="container">
         {/* Top Establishment Pill */}
-        <div style={{ display: "flex", justifyContent: "flex-start", marginBottom: "20px" }}>
+        <div style={{ display: "flex", justifyContent: "flex-start", marginBottom: "16px" }}>
           <div
             className="section-tag"
             style={{
               boxShadow: "0 2px 8px rgba(22, 163, 74, 0.12)",
-              gap: "8px"
+              fontSize: "clamp(0.75rem, 2.2vw, 0.8125rem)",
+              padding: "5px 12px"
             }}
           >
-            <Calendar size={14} />
+            <Calendar size={13} style={{ flexShrink: 0 }} />
             <span>Building stronger habits since {BUSINESS_INFO.establishedYear}</span>
           </div>
         </div>
 
-        {/* Hero Grid: Editorial Typography Left + Visual Focal Stage Right */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr",
-            gap: "48px",
-            alignItems: "center"
-          }}
-          className="hero-grid"
-        >
-          {/* Left Column: Headlines & CTA */}
-          <div>
+        {/* Hero Responsive Layout */}
+        <div className="hero-grid">
+          {/* Headlines & Action Column */}
+          <div className="hero-content-col">
             <h1
               style={{
-                fontSize: "clamp(2.5rem, 5.5vw, 4.25rem)",
+                fontSize: "clamp(2rem, 6.2vw, 4rem)",
                 fontWeight: 900,
                 textTransform: "uppercase",
                 letterSpacing: "-0.03em",
                 color: "var(--text-primary)",
-                lineHeight: 1.08,
-                marginBottom: "24px"
+                lineHeight: 1.1,
+                marginBottom: "20px",
+                overflowWrap: "break-word",
+                wordBreak: "break-word"
               }}
             >
               YOUR STRONGER <br />
@@ -73,34 +80,26 @@ export default function HeroSection() {
 
             <p
               style={{
-                fontSize: "clamp(1.0625rem, 2vw, 1.25rem)",
+                fontSize: "clamp(0.9375rem, 2vw, 1.1875rem)",
                 lineHeight: 1.6,
                 color: "var(--text-secondary)",
-                maxWidth: "540px",
-                marginBottom: "36px"
+                maxWidth: "520px",
+                marginBottom: "32px"
               }}
             >
               Build strength. Improve fitness. Show up for yourself. Start your journey with Synergy Gym.
             </p>
 
-            {/* CTAs */}
-            <div
-              style={{
-                display: "flex",
-                flexWrap: "wrap",
-                alignItems: "center",
-                gap: "16px",
-                marginBottom: "44px"
-              }}
-            >
+            {/* CTAs with Safe Mobile Wrapping */}
+            <div className="hero-cta-group">
               <a
                 href="#membership"
                 onClick={scrollToMembership}
                 className="btn btn-primary"
-                style={{ padding: "16px 32px", fontSize: "1rem" }}
+                style={{ padding: "14px 28px", fontSize: "0.9375rem" }}
               >
                 <span>Explore Memberships</span>
-                <ArrowUpRight size={18} />
+                <ArrowUpRight size={17} />
               </a>
 
               <a
@@ -108,72 +107,44 @@ export default function HeroSection() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn btn-whatsapp"
-                style={{ padding: "16px 28px", fontSize: "1rem" }}
+                style={{ padding: "14px 24px", fontSize: "0.9375rem" }}
               >
-                <MessageCircle size={18} />
+                <MessageCircle size={17} />
                 <span>Talk to Our Team</span>
               </a>
             </div>
 
             {/* Truthful Trust Stats */}
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))",
-                gap: "16px",
-                paddingTop: "24px",
-                borderTop: "1px solid var(--border-light)"
-              }}
-            >
-              <div>
-                <div style={{ fontSize: "1.75rem", fontWeight: 900, color: "var(--text-primary)", fontFamily: "var(--font-heading)" }}>
-                  2015
-                </div>
-                <div style={{ fontSize: "0.8125rem", color: "var(--text-muted)", fontWeight: 600 }}>
-                  Established in Jodhpur
-                </div>
+            <div className="hero-stats-grid">
+              <div className="hero-stat-card">
+                <div className="hero-stat-num">2015</div>
+                <div className="hero-stat-label">Established in Jodhpur</div>
               </div>
 
-              <div>
-                <div style={{ fontSize: "1.75rem", fontWeight: 900, color: "var(--brand-green)", fontFamily: "var(--font-heading)" }}>
-                  ₹1,000
-                </div>
-                <div style={{ fontSize: "0.8125rem", color: "var(--text-muted)", fontWeight: 600 }}>
-                  Starting Monthly Plan
-                </div>
+              <div className="hero-stat-card">
+                <div className="hero-stat-num" style={{ color: "var(--brand-green)" }}>₹1,000</div>
+                <div className="hero-stat-label">Starting Monthly Plan</div>
               </div>
 
-              <div>
-                <div style={{ fontSize: "1.75rem", fontWeight: 900, color: "var(--text-primary)", fontFamily: "var(--font-heading)" }}>
-                  4 Goals
-                </div>
-                <div style={{ fontSize: "0.8125rem", color: "var(--text-muted)", fontWeight: 600 }}>
-                  Focused Programs
-                </div>
+              <div className="hero-stat-card">
+                <div className="hero-stat-num">4 Goals</div>
+                <div className="hero-stat-label">Focused Programs</div>
               </div>
             </div>
           </div>
 
-          {/* Right Column: Visual Stage with Fallback Safety */}
-          <div style={{ position: "relative" }}>
-            <div
-              style={{
-                position: "relative",
-                borderRadius: "var(--radius-xl)",
-                overflow: "hidden",
-                boxShadow: "0 25px 50px -12px rgba(15, 23, 42, 0.2)",
-                border: "1px solid var(--border-light)",
-                backgroundColor: "#0F172A",
-                aspectRatio: "16 / 11"
-              }}
-            >
-              {/* Optional Video with Fallback Image */}
+          {/* Visual Stage with Robust Video & Fallback */}
+          <div className="hero-visual-col">
+            <div className="hero-media-container">
+              {/* Optional Video with Fallback */}
               {!videoError && assets.heroVideo ? (
                 <video
+                  ref={videoRef}
                   autoPlay
                   loop
                   muted
                   playsInline
+                  preload="metadata"
                   poster={assets.heroImage}
                   onError={() => setVideoError(true)}
                   style={{
@@ -186,26 +157,21 @@ export default function HeroSection() {
                 </video>
               ) : null}
 
-              {/* Graceful Fallback Hero Image (renders if video is missing or errors) */}
+              {/* Graceful Fallback Hero Image */}
               {(videoError || !assets.heroVideo) && (
                 <img
                   src={assets.heroImage || assets.heroFallback}
                   alt="Athlete training at Synergy Gym Jodhpur"
+                  onError={handleImageFallback}
                   style={{
                     width: "100%",
                     height: "100%",
                     objectFit: "cover"
                   }}
-                  onError={(e) => {
-                    // Fallback to hero fallback if primary image fails
-                    if (e.currentTarget.src !== assets.heroFallback) {
-                      e.currentTarget.src = assets.heroFallback;
-                    }
-                  }}
                 />
               )}
 
-              {/* Photographic subtle gradient overlay */}
+              {/* Subtle visual gradient */}
               <div
                 style={{
                   position: "absolute",
@@ -215,39 +181,24 @@ export default function HeroSection() {
                 }}
               />
 
-              {/* Floating Badge on Image */}
-              <div
-                style={{
-                  position: "absolute",
-                  bottom: "20px",
-                  left: "20px",
-                  right: "20px",
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  padding: "14px 18px",
-                  backgroundColor: "rgba(15, 23, 42, 0.88)",
-                  backdropFilter: "blur(12px)",
-                  borderRadius: "var(--radius-md)",
-                  border: "1px solid rgba(255, 255, 255, 0.15)",
-                  color: "#FFFFFF"
-                }}
-              >
-                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              {/* Location Badge overlay */}
+              <div className="hero-location-badge">
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", minWidth: 0 }}>
                   <div
                     style={{
-                      width: "10px",
-                      height: "10px",
+                      width: "8px",
+                      height: "8px",
                       borderRadius: "50%",
                       backgroundColor: "var(--brand-electric)",
-                      boxShadow: "0 0 10px var(--brand-electric)"
+                      boxShadow: "0 0 8px var(--brand-electric)",
+                      flexShrink: 0
                     }}
                   />
-                  <div>
-                    <div style={{ fontSize: "0.875rem", fontWeight: 700, letterSpacing: "0.02em" }}>
+                  <div style={{ minWidth: 0, overflow: "hidden" }}>
+                    <div style={{ fontSize: "0.8125rem", fontWeight: 700, letterSpacing: "0.02em", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                       Synergy Gym • Blue City
                     </div>
-                    <div style={{ fontSize: "0.75rem", color: "var(--text-inverse-muted)" }}>
+                    <div style={{ fontSize: "0.6875rem", color: "var(--text-inverse-muted)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                       Opposite Badwasia Govt. School, Jodhpur
                     </div>
                   </div>
@@ -265,11 +216,12 @@ export default function HeroSection() {
                     color: "var(--brand-electric)",
                     display: "flex",
                     alignItems: "center",
-                    gap: "4px"
+                    gap: "4px",
+                    flexShrink: 0
                   }}
                 >
-                  <MapPin size={14} />
-                  <span>View Map</span>
+                  <MapPin size={13} />
+                  <span>Map</span>
                 </a>
               </div>
             </div>
@@ -278,9 +230,94 @@ export default function HeroSection() {
       </div>
 
       <style>{`
+        .hero-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 36px;
+          align-items: center;
+        }
+
+        .hero-cta-group {
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          gap: 12px;
+          margin-bottom: 36px;
+        }
+
+        .hero-stats-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 12px;
+          padding-top: 20px;
+          border-top: 1px solid var(--border-light);
+        }
+
+        .hero-stat-card {
+          min-width: 0;
+        }
+
+        .hero-stat-num {
+          font-size: clamp(1.375rem, 3.5vw, 1.75rem);
+          font-weight: 900;
+          color: var(--text-primary);
+          font-family: var(--font-heading);
+          line-height: 1.1;
+        }
+
+        .hero-stat-label {
+          font-size: clamp(0.6875rem, 1.8vw, 0.8125rem);
+          color: var(--text-muted);
+          font-weight: 600;
+          margin-top: 2px;
+          line-height: 1.3;
+        }
+
+        .hero-media-container {
+          position: relative;
+          border-radius: var(--radius-xl);
+          overflow: hidden;
+          box-shadow: 0 16px 36px -10px rgba(15, 23, 42, 0.18);
+          border: 1px solid var(--border-light);
+          background-color: #0F172A;
+          aspect-ratio: 16 / 10;
+          width: 100%;
+        }
+
+        .hero-location-badge {
+          position: absolute;
+          bottom: 12px;
+          left: 12px;
+          right: 12px;
+          display: flex;
+          justifyContent: space-between;
+          align-items: center;
+          gap: 8px;
+          padding: 10px 14px;
+          background-color: rgba(15, 23, 42, 0.9);
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
+          border-radius: var(--radius-md);
+          border: 1px solid rgba(255, 255, 255, 0.15);
+          color: #FFFFFF;
+        }
+
+        @media (max-width: 480px) {
+          .hero-cta-group .btn {
+            width: 100%;
+          }
+        }
+
         @media (min-width: 992px) {
           .hero-grid {
-            grid-template-columns: 1.1fr 0.9fr !important;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 48px;
+          }
+          .hero-location-badge {
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            padding: 14px 18px;
           }
         }
       `}</style>

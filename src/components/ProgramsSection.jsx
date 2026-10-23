@@ -2,6 +2,7 @@ import React from "react";
 import { assets } from "../config/assets";
 import { BUSINESS_INFO } from "../config/business";
 import { WHATSAPP_MESSAGES, buildWhatsAppUrl } from "../utils/whatsapp";
+import { handleImageFallback } from "../utils/media";
 import { ArrowUpRight, Target, Flame, Dumbbell, Activity, Sparkles } from "lucide-react";
 
 export default function ProgramsSection() {
@@ -23,7 +24,7 @@ export default function ProgramsSection() {
     <section id="programs" className="section" style={{ backgroundColor: "#FFFFFF" }}>
       <div className="container">
         {/* Section Header */}
-        <div style={{ textAlign: "center", maxWidth: "700px", margin: "0 auto 56px auto" }}>
+        <div style={{ textAlign: "center", maxWidth: "700px", margin: "0 auto 48px auto" }}>
           <div className="section-tag">
             <Target size={14} />
             <span>Targeted Training Programs</span>
@@ -36,14 +37,8 @@ export default function ProgramsSection() {
           </p>
         </div>
 
-        {/* Programs Grid */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(270px, 1fr))",
-            gap: "28px"
-          }}
-        >
+        {/* Programs Responsive Grid (Min 100% on narrow screens, auto-fits up to desktop) */}
+        <div className="programs-grid">
           {BUSINESS_INFO.programs.map((prog) => {
             const imageSrc = assets[prog.imageKey] || assets.heroFallback;
             const prefilledMsg = WHATSAPP_MESSAGES[prog.whatsappKey] || WHATSAPP_MESSAGES.GENERAL_ENQUIRY;
@@ -64,37 +59,32 @@ export default function ProgramsSection() {
                 <div
                   style={{
                     position: "relative",
-                    height: "230px",
+                    aspectRatio: "16 / 10",
                     overflow: "hidden",
                     backgroundColor: "#0F172A"
                   }}
                 >
                   <img
                     src={imageSrc}
-                    alt={prog.title}
+                    alt={`${prog.title} training at Synergy Gym`}
                     loading="lazy"
+                    onError={handleImageFallback}
                     style={{
                       width: "100%",
                       height: "100%",
                       objectFit: "cover",
                       transition: "transform 0.4s ease"
                     }}
-                    onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
-                    onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
-                    onError={(e) => {
-                      if (e.currentTarget.src !== assets.heroFallback) {
-                        e.currentTarget.src = assets.heroFallback;
-                      }
-                    }}
                   />
                   {/* Category Pill Tag */}
                   <div
                     style={{
                       position: "absolute",
-                      top: "14px",
-                      left: "14px",
+                      top: "12px",
+                      left: "12px",
                       backgroundColor: "rgba(15, 23, 42, 0.85)",
                       backdropFilter: "blur(8px)",
+                      WebkitBackdropFilter: "blur(8px)",
                       color: "#FFFFFF",
                       padding: "5px 12px",
                       borderRadius: "var(--radius-full)",
@@ -115,7 +105,7 @@ export default function ProgramsSection() {
                 {/* Program Content */}
                 <div
                   style={{
-                    padding: "24px",
+                    padding: "20px",
                     display: "flex",
                     flexDirection: "column",
                     flexGrow: 1,
@@ -125,9 +115,9 @@ export default function ProgramsSection() {
                   <div>
                     <h3
                       style={{
-                        fontSize: "1.25rem",
+                        fontSize: "1.1875rem",
                         fontWeight: 800,
-                        marginBottom: "12px",
+                        marginBottom: "10px",
                         color: "var(--text-primary)"
                       }}
                     >
@@ -135,17 +125,17 @@ export default function ProgramsSection() {
                     </h3>
                     <p
                       style={{
-                        fontSize: "0.9375rem",
+                        fontSize: "0.875rem",
                         color: "var(--text-muted)",
                         lineHeight: 1.55,
-                        marginBottom: "24px"
+                        marginBottom: "20px"
                       }}
                     >
                       {prog.shortDescription}
                     </p>
                   </div>
 
-                  {/* Enquiry CTA to WhatsApp */}
+                  {/* Enquiry CTA to WhatsApp with 48px touch target */}
                   <a
                     href={waUrl}
                     target="_blank"
@@ -154,9 +144,10 @@ export default function ProgramsSection() {
                     style={{
                       width: "100%",
                       justifyContent: "space-between",
-                      padding: "12px 18px",
+                      padding: "12px 16px",
                       fontSize: "0.875rem",
-                      borderRadius: "var(--radius-md)"
+                      borderRadius: "var(--radius-md)",
+                      minHeight: "48px"
                     }}
                     aria-label={`Enquire about ${prog.title} on WhatsApp`}
                   >
@@ -172,19 +163,33 @@ export default function ProgramsSection() {
         {/* Responsible Disclaimer */}
         <div
           style={{
-            marginTop: "40px",
+            marginTop: "36px",
             padding: "16px 20px",
             backgroundColor: "var(--bg-subtle)",
             borderRadius: "var(--radius-md)",
             border: "1px solid var(--border-light)",
             textAlign: "center",
             fontSize: "0.8125rem",
-            color: "var(--text-muted)"
+            color: "var(--text-muted)",
+            lineHeight: 1.5
           }}
         >
           <strong>Notice:</strong> Physical results depend on individual consistency, adherence, and nutritional habits. Synergy Gym provides coaching guidance and equipment; we do not promise medical or guaranteed physical outcomes.
         </div>
       </div>
+
+      <style>{`
+        .programs-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+          gap: 20px;
+        }
+        @media (min-width: 768px) {
+          .programs-grid {
+            gap: 28px;
+          }
+        }
+      `}</style>
     </section>
   );
 }

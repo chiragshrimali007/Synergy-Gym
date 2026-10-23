@@ -8,7 +8,7 @@ export default function MembershipSection() {
     <section id="membership" className="section" style={{ backgroundColor: "#FFFFFF" }}>
       <div className="container">
         {/* Section Header */}
-        <div style={{ textAlign: "center", maxWidth: "700px", margin: "0 auto 56px auto" }}>
+        <div style={{ textAlign: "center", maxWidth: "700px", margin: "0 auto 48px auto" }}>
           <div className="section-tag">
             <CreditCard size={14} />
             <span>Transparent Pricing</span>
@@ -21,15 +21,8 @@ export default function MembershipSection() {
           </p>
         </div>
 
-        {/* Pricing Cards Grid */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-            gap: "24px",
-            alignItems: "stretch"
-          }}
-        >
+        {/* Pricing Cards Responsive Grid */}
+        <div className="membership-grid">
           {BUSINESS_INFO.membershipPlans.map((plan) => {
             const prefilledMsg = WHATSAPP_MESSAGES[plan.whatsappKey];
             const waUrl = buildWhatsAppUrl(prefilledMsg);
@@ -42,7 +35,7 @@ export default function MembershipSection() {
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "space-between",
-                  padding: "32px 24px",
+                  padding: "clamp(24px, 4vw, 32px) clamp(18px, 3vw, 24px)",
                   borderRadius: "var(--radius-xl)",
                   position: "relative",
                   backgroundColor: plan.highlight ? "var(--bg-dark)" : "var(--bg-surface)",
@@ -51,13 +44,13 @@ export default function MembershipSection() {
                     ? "2px solid var(--brand-electric)"
                     : "1px solid var(--border-light)",
                   boxShadow: plan.highlight
-                    ? "0 20px 35px -10px rgba(11, 15, 25, 0.3)"
+                    ? "0 16px 36px -10px rgba(11, 15, 25, 0.3)"
                     : "var(--shadow-sm)"
                 }}
               >
                 {/* Top Badge */}
                 {plan.badge && (
-                  <div style={{ position: "absolute", top: "-13px", left: "24px" }}>
+                  <div style={{ position: "absolute", top: "-12px", left: "20px" }}>
                     <span
                       className={`badge-pill ${plan.highlight ? "badge-lime" : "badge-green"}`}
                     >
@@ -68,24 +61,24 @@ export default function MembershipSection() {
 
                 <div>
                   {/* Plan Header */}
-                  <div style={{ marginBottom: "20px" }}>
+                  <div style={{ marginBottom: "16px", marginTop: plan.badge ? "4px" : "0" }}>
                     <h3
                       style={{
-                        fontSize: "1.375rem",
+                        fontSize: "1.25rem",
                         fontWeight: 800,
                         color: plan.highlight ? "#FFFFFF" : "var(--text-primary)",
-                        marginBottom: "4px"
+                        marginBottom: "2px"
                       }}
                     >
                       {plan.duration}
                     </h3>
                     <span
                       style={{
-                        fontSize: "0.8125rem",
+                        fontSize: "0.75rem",
                         color: plan.highlight ? "var(--text-inverse-muted)" : "var(--text-muted)",
                         fontWeight: 600,
                         textTransform: "uppercase",
-                        letterSpacing: "0.04em"
+                        letterSpacing: "0.06em"
                       }}
                     >
                       {plan.periodLabel}
@@ -98,12 +91,12 @@ export default function MembershipSection() {
                       display: "flex",
                       alignItems: "baseline",
                       gap: "4px",
-                      marginBottom: "16px"
+                      marginBottom: "14px"
                     }}
                   >
                     <span
                       style={{
-                        fontSize: "1.75rem",
+                        fontSize: "1.5rem",
                         fontWeight: 800,
                         color: plan.highlight ? "var(--brand-electric)" : "var(--brand-green)",
                         fontFamily: "var(--font-heading)"
@@ -113,7 +106,7 @@ export default function MembershipSection() {
                     </span>
                     <span
                       style={{
-                        fontSize: "3rem",
+                        fontSize: "clamp(2.5rem, 6vw, 3rem)",
                         fontWeight: 900,
                         lineHeight: 1,
                         color: plan.highlight ? "#FFFFFF" : "var(--text-primary)",
@@ -131,7 +124,7 @@ export default function MembershipSection() {
                       fontSize: "0.875rem",
                       color: plan.highlight ? "var(--text-inverse-muted)" : "var(--text-muted)",
                       lineHeight: 1.5,
-                      marginBottom: "28px"
+                      marginBottom: "24px"
                     }}
                   >
                     {plan.description}
@@ -143,8 +136,8 @@ export default function MembershipSection() {
                       borderTop: plan.highlight
                         ? "1px solid rgba(255, 255, 255, 0.12)"
                         : "1px solid var(--border-light)",
-                      paddingTop: "24px",
-                      marginBottom: "32px"
+                      paddingTop: "20px",
+                      marginBottom: "28px"
                     }}
                   >
                     <div
@@ -153,13 +146,13 @@ export default function MembershipSection() {
                         fontWeight: 800,
                         textTransform: "uppercase",
                         letterSpacing: "0.08em",
-                        marginBottom: "16px",
+                        marginBottom: "14px",
                         color: plan.highlight ? "var(--brand-electric)" : "var(--text-muted)"
                       }}
                     >
                       Plan Includes
                     </div>
-                    <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: "12px" }}>
+                    <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: "10px" }}>
                       {plan.features.map((feat, i) => (
                         <li
                           key={i}
@@ -199,7 +192,7 @@ export default function MembershipSection() {
                   </div>
                 </div>
 
-                {/* WhatsApp Action Button */}
+                {/* WhatsApp Action Button with 48px Touch Target */}
                 <a
                   href={waUrl}
                   target="_blank"
@@ -207,8 +200,9 @@ export default function MembershipSection() {
                   className={`btn ${plan.highlight ? "btn-lime" : "btn-primary"}`}
                   style={{
                     width: "100%",
-                    padding: "14px",
-                    fontSize: "0.9375rem"
+                    padding: "13px",
+                    fontSize: "0.9375rem",
+                    minHeight: "48px"
                   }}
                   aria-label={`Join ${plan.duration} plan for ${plan.currency}${plan.price} via WhatsApp`}
                 >
@@ -221,18 +215,7 @@ export default function MembershipSection() {
         </div>
 
         {/* Truthful Joining Policies */}
-        <div
-          style={{
-            marginTop: "48px",
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-            gap: "20px",
-            padding: "24px",
-            backgroundColor: "var(--bg-primary)",
-            borderRadius: "var(--radius-lg)",
-            border: "1px solid var(--border-light)"
-          }}
-        >
+        <div className="membership-policies">
           <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
             <ShieldCheck size={20} style={{ color: "var(--brand-green)", flexShrink: 0 }} />
             <div style={{ fontSize: "0.875rem", color: "var(--text-secondary)" }}>
@@ -253,6 +236,36 @@ export default function MembershipSection() {
           </div>
         </div>
       </div>
+
+      <style>{`
+        .membership-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+          gap: 20px;
+          align-items: stretch;
+        }
+
+        .membership-policies {
+          margin-top: 40px;
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+          gap: 16px;
+          padding: 20px;
+          background-color: var(--bg-primary);
+          border-radius: var(--radius-lg);
+          border: 1px solid var(--border-light);
+        }
+
+        @media (min-width: 768px) {
+          .membership-grid {
+            gap: 24px;
+          }
+          .membership-policies {
+            padding: 24px;
+            gap: 20px;
+          }
+        }
+      `}</style>
     </section>
   );
 }
