@@ -72,7 +72,7 @@ export default function MobileCta() {
           border-radius: var(--radius-full);
           box-shadow: 0 8px 24px rgba(22, 163, 74, 0.42);
           font-weight: 700;
-          font-size: 0.875rem;
+          font-size: var(--text-btn);
           text-decoration: none;
           border: 2px solid #FFFFFF;
           box-sizing: border-box;

@@ -46,9 +46,27 @@
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
   --shadow-hover: 0 20px 30px -10px rgba(15, 23, 42, 0.12), 0 8px 10px -5px rgba(15, 23, 42, 0.06);
 
-  /* Typography */
+  /* Typography Fonts */
   --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* ==========================================================================
+     TYPOGRAPHIC SCALE SYSTEM (Web & Mobile Standards)
+     Modular hierarchical scale with visual rhythm and line height (1.4 - 1.6)
+     ========================================================================== */
+  /* Mobile Defaults (< 768px):
+     H1: 24–30px | H2: 20–24px | H3: 18–20px
+     Body: 14–16px (15px base) | Buttons: 14–16px | Captions/Hints: 12–14px
+     Line Heights: Headings: 1.2 | Body: 1.55
+  */
+  --text-h1: clamp(24px, 5.6vw, 30px);
+  --text-h2: clamp(20px, 4.4vw, 24px);
+  --text-h3: clamp(18px, 3.8vw, 20px);
+  --text-body: 15px;
+  --text-btn: 15px;
+  --text-caption: 13px;
+  --line-height-heading: 1.2;
+  --line-height-body: 1.55;
 
   /* Layout & Spacing */
   --container-max: 1240px;
@@ -155,23 +173,83 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Section Spacing & Sticky Anchor Offset */
 .section {
-  padding-top: 64px;
-  padding-bottom: 64px;
-  scroll-margin-top: calc(var(--header-height) + 12px);
+  padding-top: 36px;
+  padding-bottom: 36px;
+  scroll-margin-top: calc(var(--header-height) + 8px);
+}
+
+@media (min-width: 640px) {
+  .section {
+    padding-top: 52px;
+    padding-bottom: 52px;
+  }
 }
 
 @media (min-width: 768px) {
+  :root {
+    /* Desktop UI Scale:
+       H1: 32–36px | H2: 24–30px | H3: 20–24px
+       Body: 16px (base) | Buttons: 14–16px | Captions/Hints: 12–14px
+       Line Heights: Headings: 1.2 | Body: 1.6
+    */
+    --text-h1: clamp(32px, 3.2vw, 36px);
+    --text-h2: clamp(24px, 2.4vw, 30px);
+    --text-h3: clamp(20px, 1.8vw, 24px);
+    --text-body: 16px;
+    --text-btn: 15px;
+    --text-caption: 13px;
+    --line-height-heading: 1.2;
+    --line-height-body: 1.6;
+  }
+
+  .section {
+    padding-top: 72px;
+    padding-bottom: 72px;
+  }
+}
+
+@media (min-width: 1024px) {
   .section {
     padding-top: 88px;
     padding-bottom: 88px;
   }
 }
 
-@media (min-width: 1024px) {
-  .section {
-    padding-top: 108px;
-    padding-bottom: 108px;
-  }
+/* Headings with Overflow Wrap Protection & Modular Scale */
+h1 {
+  font-family: var(--font-heading);
+  font-size: var(--text-h1);
+  line-height: var(--line-height-heading);
+  letter-spacing: -0.02em;
+}
+
+h2 {
+  font-family: var(--font-heading);
+  font-size: var(--text-h2);
+  line-height: var(--line-height-heading);
+  letter-spacing: -0.02em;
+}
+
+h3 {
+  font-family: var(--font-heading);
+  font-size: var(--text-h3);
+  line-height: var(--line-height-heading);
+  letter-spacing: -0.015em;
+}
+
+h4, h5, h6 {
+  font-family: var(--font-heading);
+  color: var(--text-primary);
+  font-weight: 800;
+  line-height: var(--line-height-heading);
+  letter-spacing: -0.01em;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+p {
+  font-size: var(--text-body);
+  line-height: var(--line-height-body);
 }
 
 /* Section Header Typography */
@@ -179,15 +257,15 @@ h1, h2, h3, h4, h5, h6 {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-size: 0.8125rem;
+  font-size: var(--text-caption);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--brand-green);
   background: var(--bg-accent-light);
-  padding: 6px 14px;
+  padding: 5px 12px;
   border-radius: var(--radius-full);
-  margin-bottom: 16px;
+  margin-bottom: 14px;
   border: 1px solid rgba(22, 163, 74, 0.2);
   max-width: 100%;
   overflow-wrap: break-word;
@@ -200,24 +278,24 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .section-title {
-  font-size: clamp(1.75rem, 4.8vw, 3.125rem);
-  line-height: 1.15;
-  margin-bottom: 16px;
-  letter-spacing: -0.025em;
+  font-size: var(--text-h2);
+  line-height: var(--line-height-heading);
+  margin-bottom: 14px;
+  letter-spacing: -0.02em;
   text-transform: uppercase;
 }
 
 .section-description {
-  font-size: clamp(0.9375rem, 1.8vw, 1.125rem);
+  font-size: var(--text-body);
   color: var(--text-muted);
   max-width: 640px;
-  margin-bottom: 40px;
-  line-height: 1.6;
+  margin-bottom: 28px;
+  line-height: var(--line-height-body);
 }
 
 @media (min-width: 768px) {
   .section-description {
-    margin-bottom: 48px;
+    margin-bottom: 36px;
   }
 }
 
@@ -229,9 +307,9 @@ h1, h2, h3, h4, h5, h6 {
   gap: 10px;
   font-family: var(--font-heading);
   font-weight: 700;
-  font-size: 0.9375rem;
+  font-size: var(--text-btn);
   letter-spacing: 0.02em;
-  padding: 13px 24px;
+  padding: 12px 22px;
   min-height: 48px;
   border-radius: var(--radius-full);
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);

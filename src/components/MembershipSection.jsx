@@ -21,6 +21,13 @@ export default function MembershipSection() {
           </p>
         </div>
 
+        {/* Mobile Swipe Hint */}
+        <div className="membership-mobile-hint" style={{ textAlign: "center", marginBottom: "14px" }}>
+          <span style={{ fontSize: "0.75rem", color: "var(--brand-green)", fontWeight: 700, backgroundColor: "var(--bg-accent-light)", padding: "4px 12px", borderRadius: "var(--radius-full)", border: "1px solid rgba(22, 163, 74, 0.2)" }}>
+            👈 Swipe horizontally to compare all 4 plans 👉
+          </span>
+        </div>
+
         {/* Pricing Cards Responsive Grid */}
         <div className="membership-grid">
           {BUSINESS_INFO.membershipPlans.map((plan) => {
@@ -64,9 +71,10 @@ export default function MembershipSection() {
                   <div style={{ marginBottom: "16px", marginTop: plan.badge ? "4px" : "0" }}>
                     <h3
                       style={{
-                        fontSize: "1.25rem",
+                        fontSize: "var(--text-h3)",
                         fontWeight: 800,
                         color: plan.highlight ? "#FFFFFF" : "var(--text-primary)",
+                        lineHeight: "var(--line-height-heading)",
                         marginBottom: "2px"
                       }}
                     >
@@ -74,7 +82,7 @@ export default function MembershipSection() {
                     </h3>
                     <span
                       style={{
-                        fontSize: "0.75rem",
+                        fontSize: "var(--text-caption)",
                         color: plan.highlight ? "var(--text-inverse-muted)" : "var(--text-muted)",
                         fontWeight: 600,
                         textTransform: "uppercase",
@@ -160,7 +168,7 @@ export default function MembershipSection() {
                             display: "flex",
                             alignItems: "center",
                             gap: "10px",
-                            fontSize: "0.875rem",
+                            fontSize: "var(--text-body)",
                             color: plan.highlight ? "#E2E8F0" : "var(--text-secondary)"
                           }}
                         >
@@ -200,8 +208,7 @@ export default function MembershipSection() {
                   className={`btn ${plan.highlight ? "btn-lime" : "btn-primary"}`}
                   style={{
                     width: "100%",
-                    padding: "13px",
-                    fontSize: "0.9375rem",
+                    padding: "12px",
                     minHeight: "48px"
                   }}
                   aria-label={`Join ${plan.duration} plan for ${plan.currency}${plan.price} via WhatsApp`}
@@ -241,16 +248,46 @@ export default function MembershipSection() {
         .membership-grid {
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
-          gap: 20px;
+          gap: 16px;
           align-items: stretch;
         }
 
+        .membership-mobile-hint {
+          display: none;
+        }
+
+        @media (max-width: 680px) {
+          .membership-mobile-hint {
+            display: block;
+          }
+
+          .membership-grid {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            gap: 14px;
+            padding: 12px 4px 16px 4px;
+            scrollbar-width: none;
+          }
+          .membership-grid::-webkit-scrollbar {
+            display: none;
+          }
+
+          .membership-grid > div {
+            flex: 0 0 clamp(260px, 82vw, 300px);
+            scroll-snap-align: center;
+          }
+        }
+
         .membership-policies {
-          margin-top: 40px;
+          margin-top: 32px;
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
-          gap: 16px;
-          padding: 20px;
+          gap: 14px;
+          padding: 16px;
           background-color: var(--bg-primary);
           border-radius: var(--radius-lg);
           border: 1px solid var(--border-light);

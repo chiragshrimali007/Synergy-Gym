@@ -43,12 +43,12 @@ export default function FinalCtaSection() {
 
           <h2
             style={{
-              fontSize: "clamp(1.85rem, 5vw, 3.5rem)",
+              fontSize: "var(--text-h1)",
               fontWeight: 900,
               textTransform: "uppercase",
               letterSpacing: "-0.02em",
-              lineHeight: 1.1,
-              marginBottom: "18px",
+              lineHeight: "var(--line-height-heading)",
+              marginBottom: "16px",
               color: "#FFFFFF",
               overflowWrap: "break-word",
               wordBreak: "break-word"
@@ -60,11 +60,11 @@ export default function FinalCtaSection() {
 
           <p
             style={{
-              fontSize: "clamp(0.9375rem, 1.8vw, 1.1875rem)",
+              fontSize: "var(--text-body)",
               color: "var(--text-inverse-muted)",
-              lineHeight: 1.6,
+              lineHeight: "var(--line-height-body)",
               maxWidth: "580px",
-              margin: "0 auto 36px auto"
+              margin: "0 auto 28px auto"
             }}
           >
             Have questions about memberships or training? Talk to the Synergy team. We are here to help you get started.
@@ -76,7 +76,7 @@ export default function FinalCtaSection() {
               target="_blank"
               rel="noopener noreferrer"
               className="btn btn-lime"
-              style={{ padding: "14px 32px", fontSize: "1rem", minHeight: "48px" }}
+              style={{ padding: "12px 28px" }}
             >
               <MessageCircle size={19} />
               <span>Chat on WhatsApp</span>

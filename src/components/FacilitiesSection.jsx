@@ -11,7 +11,6 @@ import {
   Award,
   Sparkles,
   Play,
-  RotateCcw,
   ArrowUpRight,
   Eye
 } from "lucide-react";
@@ -19,12 +18,10 @@ import {
 export default function FacilitiesSection() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [videoError, setVideoError] = useState(false);
-  const [playFailed, setPlayFailed] = useState(false);
   const videoRef = useRef(null);
 
   const handlePlayRequest = () => {
     if (!videoRef.current) return;
-    setPlayFailed(false);
     videoRef.current
       .play()
       .then(() => {
@@ -32,7 +29,6 @@ export default function FacilitiesSection() {
       })
       .catch((err) => {
         console.warn("Video playback was interrupted or blocked:", err.message);
-        setPlayFailed(true);
       });
   };
 
@@ -42,7 +38,6 @@ export default function FacilitiesSection() {
 
   const handlePlay = () => {
     setIsPlaying(true);
-    setPlayFailed(false);
   };
 
   const renderIcon = (name) => {
@@ -67,7 +62,7 @@ export default function FacilitiesSection() {
     <section id="experience" className="section" style={{ backgroundColor: "var(--bg-primary)" }}>
       <div className="container">
         {/* Section Header */}
-        <div style={{ maxWidth: "700px", marginBottom: "44px" }}>
+        <div style={{ maxWidth: "700px", marginBottom: "36px" }}>
           <div className="section-tag">
             <Eye size={14} />
             <span>The Synergy Environment</span>
@@ -80,150 +75,145 @@ export default function FacilitiesSection() {
           </p>
         </div>
 
-        {/* Demo Video & Floor Experience Showcase */}
+        {/* Video Showcase Stage */}
         <div className="video-showcase-wrapper">
           <div className="video-aspect-container">
+            {/* Native Video Player */}
             {!videoError && assets.gymTourVideo ? (
               <video
                 ref={videoRef}
-                poster={assets.videoPoster || assets.gymInterior}
-                controls={isPlaying}
                 playsInline
                 preload="metadata"
-                onPlay={handlePlay}
+                controls={isPlaying}
+                poster={assets.videoPoster || assets.gymInterior}
                 onPause={handlePause}
+                onPlay={handlePlay}
                 onError={() => setVideoError(true)}
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover"
+                }}
               >
                 <source src={assets.gymTourVideo} type="video/mp4" />
-                Your browser does not support HTML video playback.
+                Your browser does not support HTML5 video.
               </video>
             ) : (
-              /* Fallback visual if video is genuinely missing */
+              /* Fallback Static Image if Video Missing or Fails */
               <img
                 src={assets.videoPoster || assets.gymInterior}
-                alt="Synergy Gym Floor Experience"
+                alt="Synergy Gym Floor Overview"
                 onError={handleImageFallback}
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover"
+                }}
               />
             )}
 
-            {/* Video Initial Poster Overlay (Shown only before video is actively playing) */}
-            {!isPlaying && !videoError && assets.gymTourVideo && (
+            {/* Custom Overlay when video is not actively playing */}
+            {!isPlaying && (
               <div className="video-poster-overlay">
-                <div style={{ display: "flex", justifyContent: "flex-start" }}>
-                  <span className="badge-pill badge-lime" style={{ fontSize: "0.75rem" }}>
-                    Synergy Floor Preview
+                <div>
+                  <span
+                    className="badge-pill badge-green"
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "6px",
+                      marginBottom: "12px",
+                      fontSize: "var(--text-caption)"
+                    }}
+                  >
+                    <span>Authentic Floor Video</span>
                   </span>
+                  <h3
+                    style={{
+                      fontSize: "clamp(1.125rem, 3.2vw, 1.75rem)",
+                      fontWeight: 900,
+                      color: "#FFFFFF",
+                      textTransform: "uppercase",
+                      letterSpacing: "-0.01em",
+                      lineHeight: "var(--line-height-heading)"
+                    }}
+                  >
+                    TAKE A LOOK INSIDE SYNERGY
+                  </h3>
                 </div>
 
-                {/* Center Play Button */}
-                <div style={{ alignSelf: "center", textAlign: "center" }}>
+                {/* Central Play Button */}
+                <div style={{ display: "flex", justifyContent: "center", alignItems: "center", margin: "16px 0" }}>
                   <button
                     onClick={handlePlayRequest}
-                    aria-label={playFailed ? "Retry playing video" : "Play Gym Tour Video"}
+                    aria-label="Play gym tour video"
                     className="video-play-btn"
                   >
-                    {playFailed ? <RotateCcw size={28} /> : <Play size={28} fill="#0F172A" style={{ marginLeft: "3px" }} />}
+                    <Play size={28} fill="#0F172A" style={{ marginLeft: "4px" }} />
                   </button>
-                  {playFailed && (
-                    <p style={{ color: "#FFFFFF", fontSize: "0.8125rem", marginTop: "10px", fontWeight: 600 }}>
-                      Tap again to play video
-                    </p>
-                  )}
                 </div>
 
-                <div style={{ color: "#FFFFFF" }}>
-                  <h3 style={{ color: "#FFFFFF", fontSize: "clamp(1.125rem, 3vw, 1.375rem)", marginBottom: "4px" }}>
-                    Verified Local Training Facility
-                  </h3>
-                  <p style={{ color: "var(--text-inverse-muted)", fontSize: "0.8125rem", maxWidth: "480px", lineHeight: 1.4 }}>
-                    Equipped with heavy dumbbells, multi-angle benches, Olympic bars, and dedicated cardio stations.
-                  </p>
-                </div>
-              </div>
-            )}
-
-            {/* Static Action if Video is Missing */}
-            {videoError && (
-              <div
-                style={{
-                  position: "absolute",
-                  bottom: "20px",
-                  left: "20px",
-                  right: "20px",
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  flexWrap: "wrap",
-                  gap: "12px",
-                  backgroundColor: "rgba(15, 23, 42, 0.9)",
-                  padding: "14px 20px",
-                  borderRadius: "var(--radius-md)",
-                  color: "#FFFFFF"
-                }}
-              >
-                <div>
-                  <div style={{ fontWeight: 700, fontSize: "0.9375rem" }}>Visit Synergy Gym in Person</div>
-                  <div style={{ fontSize: "0.75rem", color: "var(--text-inverse-muted)" }}>Walk-in tours open during floor hours</div>
-                </div>
-                <a
-                  href={buildWhatsAppUrl(WHATSAPP_MESSAGES.VISIT_THE_GYM)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn btn-lime"
-                  style={{ padding: "8px 16px", fontSize: "0.8125rem", minHeight: "38px" }}
+                {/* Bottom Overlay Info & Action */}
+                <div
+                  style={{
+                    position: "absolute",
+                    bottom: "16px",
+                    left: "16px",
+                    right: "16px",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    flexWrap: "wrap",
+                    gap: "10px",
+                    backgroundColor: "rgba(15, 23, 42, 0.9)",
+                    padding: "10px 16px",
+                    borderRadius: "var(--radius-md)",
+                    color: "#FFFFFF"
+                  }}
                 >
-                  <span>Book Tour</span>
-                  <ArrowUpRight size={14} />
-                </a>
+                  <div>
+                    <div style={{ fontWeight: 700, fontSize: "0.875rem" }}>Visit Synergy Gym in Person</div>
+                    <div style={{ fontSize: "var(--text-caption)", color: "var(--text-inverse-muted)" }}>Walk-in tours open during floor hours</div>
+                  </div>
+                  <a
+                    href={buildWhatsAppUrl(WHATSAPP_MESSAGES.VISIT_THE_GYM)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn btn-lime"
+                    style={{ padding: "6px 14px", minHeight: "36px" }}
+                  >
+                    <span>Book Tour</span>
+                    <ArrowUpRight size={14} />
+                  </a>
+                </div>
               </div>
             )}
           </div>
         </div>
 
-        {/* Verified Facility Features Grid */}
+        {/* Mobile Swipe Hint */}
+        <div className="facilities-mobile-hint-wrap">
+          <span className="facilities-mobile-hint">
+            👈 Swipe horizontally to view all 6 facilities 👉
+          </span>
+        </div>
+
+        {/* Verified Facility Features (Single-line swipe on mobile, 3-column grid on desktop) */}
         <div className="facilities-grid">
           {BUSINESS_INFO.facilities.map((fac, idx) => (
             <div
               key={idx}
-              className="card-surface"
-              style={{
-                padding: "22px",
-                display: "flex",
-                gap: "16px",
-                alignItems: "flex-start",
-                borderRadius: "var(--radius-lg)"
-              }}
+              className="card-surface facility-card"
             >
-              <div
-                style={{
-                  width: "44px",
-                  height: "44px",
-                  borderRadius: "var(--radius-md)",
-                  backgroundColor: "var(--bg-accent-light)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0,
-                  border: "1px solid rgba(22, 163, 74, 0.2)"
-                }}
-              >
+              <div className="facility-icon-box">
                 {renderIcon(fac.icon)}
               </div>
 
-              <div>
-                <h3
-                  style={{
-                    fontSize: "1rem",
-                    fontWeight: 800,
-                    marginBottom: "6px",
-                    color: "var(--text-primary)"
-                  }}
-                >
+              <div className="facility-text-wrap">
+                <h3 className="facility-title">
                   {fac.title}
                 </h3>
-                <p style={{ fontSize: "0.875rem", color: "var(--text-muted)", lineHeight: 1.5 }}>
+                <p className="facility-desc">
                   {fac.description}
                 </p>
               </div>
@@ -240,13 +230,13 @@ export default function FacilitiesSection() {
           background-color: #0B0F19;
           border: 1px solid var(--border-light);
           box-shadow: var(--shadow-xl);
-          margin-bottom: 48px;
+          margin-bottom: 36px;
         }
 
         .video-aspect-container {
           position: relative;
           aspect-ratio: 16 / 9;
-          max-height: 520px;
+          max-height: 480px;
           width: 100%;
           background-color: #0F172A;
         }
@@ -257,14 +247,14 @@ export default function FacilitiesSection() {
           display: flex;
           flex-direction: column;
           justifyContent: space-between;
-          padding: clamp(16px, 3.5vw, 36px);
+          padding: clamp(14px, 3.5vw, 32px);
           background: linear-gradient(180deg, rgba(11, 15, 25, 0.3) 0%, rgba(11, 15, 25, 0.85) 100%);
           z-index: 2;
         }
 
         .video-play-btn {
-          width: 64px;
-          height: 64px;
+          width: 60px;
+          height: 60px;
           border-radius: 50%;
           background-color: var(--brand-electric);
           color: #0F172A;
@@ -279,10 +269,108 @@ export default function FacilitiesSection() {
           transform: scale(0.92);
         }
 
+        /* Facilities Mobile Hint */
+        .facilities-mobile-hint-wrap {
+          display: none;
+          text-align: center;
+          margin-bottom: 14px;
+        }
+
+        .facilities-mobile-hint {
+          font-size: var(--text-caption);
+          color: var(--brand-green);
+          font-weight: 700;
+          background-color: var(--bg-accent-light);
+          padding: 4px 12px;
+          border-radius: var(--radius-full);
+          border: 1px solid rgba(22, 163, 74, 0.2);
+        }
+
+        /* Grid Architecture */
         .facilities-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(min(100%, 270px), 1fr));
+          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
           gap: 18px;
+        }
+
+        .facility-card {
+          padding: 20px;
+          border-radius: var(--radius-lg);
+          border: 1px solid var(--border-light);
+          display: flex;
+          flex-direction: column;
+          gap: 14px;
+          background-color: var(--bg-surface);
+          box-shadow: var(--shadow-sm);
+          transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .facility-card:hover {
+          border-color: var(--brand-green);
+          transform: translateY(-2px);
+        }
+
+        .facility-icon-box {
+          width: 44px;
+          height: 44px;
+          border-radius: var(--radius-md);
+          background-color: var(--bg-accent-light);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+          border: 1px solid rgba(22, 163, 74, 0.2);
+        }
+
+        .facility-text-wrap {
+          min-width: 0;
+        }
+
+        .facility-title {
+          font-size: var(--text-h3);
+          font-weight: 800;
+          margin-bottom: 6px;
+          color: var(--text-primary);
+          line-height: var(--line-height-heading);
+          hyphens: none;
+          -webkit-hyphens: none;
+          word-break: normal;
+          overflow-wrap: break-word;
+          white-space: normal;
+        }
+
+        .facility-desc {
+          font-size: var(--text-caption);
+          color: var(--text-muted);
+          line-height: var(--line-height-body);
+        }
+
+        /* Mobile Layout: Smooth Horizontal Swipe Rail in 1 Line */
+        @media (max-width: 680px) {
+          .facilities-mobile-hint-wrap {
+            display: block;
+          }
+
+          .facilities-grid {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            gap: 12px;
+            padding: 4px 2px 16px 2px;
+            scrollbar-width: none;
+          }
+          .facilities-grid::-webkit-scrollbar {
+            display: none;
+          }
+
+          .facility-card {
+            flex: 0 0 clamp(240px, 78vw, 290px);
+            scroll-snap-align: start;
+            padding: 18px 16px;
+          }
         }
 
         @media (min-width: 768px) {

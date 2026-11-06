@@ -1,10 +1,8 @@
 /**
  * Centralized Asset Manifest
- * All components must reference this manifest instead of hardcoding paths.
+ * All components reference this manifest instead of hardcoding paths.
  * Media files reside in /public/assets/...
- *
- * Canonical convention: Standard paths use .jpg extensions.
- * Our media helper also provides automatic fallback to .jpeg if present.
+ * All photos are 100% authentic gym images (zero stock photos).
  */
 
 export const assets = {
@@ -12,18 +10,29 @@ export const assets = {
   heroImage: "/assets/images/hero-gym.jpg",
   heroVideo: "/assets/videos/hero-workout.mp4",
   heroFallback: "/assets/images/hero-fallback.jpg",
+  gymOwner: "/assets/images/gym-owner.jpg",
   videoPoster: "/assets/images/video-poster.jpg",
   gymInterior: "/assets/images/gym-interior.jpg",
+  gymInterior2: "/assets/images/gym-interior-2.jpg",
   strengthTraining: "/assets/images/strength-training.jpg",
   weightLoss: "/assets/images/weight-loss.jpg",
   muscleGain: "/assets/images/muscle-gain.jpg",
   generalFitness: "/assets/images/general-fitness.jpg",
-  trainingEquipment: "/assets/images/training-equipment.jpg",
   trainerSession: "/assets/images/trainer-session.jpg",
   gallery: [
     {
       url: "/assets/images/gallery-01.jpg",
-      caption: "Spacious Gym Floor & Heavy Dumbbells",
+      caption: "Spacious Gym Floor & Free Weights",
+      category: "interior"
+    },
+    {
+      url: "/assets/images/gym-interior.jpg",
+      caption: "Strength Training & Cable Crossover Section",
+      category: "interior"
+    },
+    {
+      url: "/assets/images/gym-interior-2.jpg",
+      caption: "Interior Equipment & Resistance Training Floor",
       category: "interior"
     },
     {
@@ -33,7 +42,7 @@ export const assets = {
     },
     {
       url: "/assets/images/gallery-03.jpg",
-      caption: "Functional Conditioning & Free Weights Zone",
+      caption: "Functional Conditioning & Dumbbell Zone",
       category: "training"
     },
     {
@@ -42,18 +51,13 @@ export const assets = {
       category: "equipment"
     },
     {
-      url: "/assets/images/gym-interior.jpg",
-      caption: "Full View of Modern Training Equipment",
-      category: "interior"
-    },
-    {
-      url: "/assets/images/training-equipment.jpg",
-      caption: "Heavy Duty Dumbbells & Precision Iron",
-      category: "equipment"
-    },
-    {
       url: "/assets/images/boxing club.jpg",
       caption: "Combat & Boxing Conditioning Area",
+      category: "training"
+    },
+    {
+      url: "/assets/images/gym-owner.jpg",
+      caption: "Synergy Gym Owner & Head Coach on Training Floor",
       category: "training"
     }
   ],

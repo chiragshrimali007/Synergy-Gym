@@ -4,6 +4,7 @@ import HeroSection from "./components/HeroSection";
 import ProgramsSection from "./components/ProgramsSection";
 import FacilitiesSection from "./components/FacilitiesSection";
 import MembershipSection from "./components/MembershipSection";
+import FaqSection from "./components/FaqSection";
 import GallerySection from "./components/GallerySection";
 import AboutSection from "./components/AboutSection";
 import LocationSection from "./components/LocationSection";
@@ -23,6 +24,7 @@ export default function App() {
         <ProgramsSection />
         <FacilitiesSection />
         <MembershipSection />
+        <FaqSection />
         <GallerySection />
         <AboutSection />
         <LocationSection />

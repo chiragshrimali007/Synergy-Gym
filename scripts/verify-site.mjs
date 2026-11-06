@@ -33,6 +33,16 @@ assert(BUSINESS_INFO.address.state === "Rajasthan", "State is Rajasthan");
 assert(BUSINESS_INFO.address.line1.includes("Opposite Badwasia Govt. School"), "Address includes 'Opposite Badwasia Govt. School'");
 assert(BUSINESS_INFO.address.area.includes("Maderana Colony"), "Area includes 'Maderana Colony'");
 
+// Verify Exact Coordinates
+assert(BUSINESS_INFO.coordinates.lat === 26.31492966707864, "Exact latitude is 26.31492966707864");
+assert(BUSINESS_INFO.coordinates.lng === 73.05242410415379, "Exact longitude is 73.05242410415379");
+assert(BUSINESS_INFO.googleMapsDirectionsUrl.includes("destination=26.31492966707864,73.05242410415379"), "Directions URL has exact destination");
+assert(BUSINESS_INFO.mapEmbedUrl.includes("26.31492966707864,73.05242410415379"), "Map embed URL has exact coordinates");
+
+// Verify Girls Persona Batch
+assert(typeof BUSINESS_INFO.hours.girlsBatch === "string" && BUSINESS_INFO.hours.girlsBatch.includes("4:00 PM"), "Girls Persona Batch timing is configured for 4:00 PM");
+assert(BUSINESS_INFO.girlsBatch && BUSINESS_INFO.girlsBatch.title === "Girls Persona Batch", "Girls Persona Batch info object exists");
+
 // 2. Membership Pricing Verification
 assert(BUSINESS_INFO.membershipPlans.length === 4, "Exactly 4 membership plans defined");
 const plan1 = BUSINESS_INFO.membershipPlans.find(p => p.duration === "1 Month");
@@ -55,6 +65,8 @@ assert(testUrl.includes(encodeURIComponent("₹1,000")), "One-month message prop
 
 const expectedKeys = [
   "GENERAL_ENQUIRY",
+  "GIRLS_BATCH",
+  "OWNER_DIRECT",
   "ONE_MONTH",
   "THREE_MONTH",
   "SIX_MONTH",
@@ -70,20 +82,21 @@ for (const key of expectedKeys) {
   assert(typeof WHATSAPP_MESSAGES[key] === "string" && WHATSAPP_MESSAGES[key].length > 20, `WhatsApp preset '${key}' exists and has descriptive text`);
 }
 
-// 4. Physical Asset Integrity & Dual Extension Availability (.jpg & .jpeg)
+// 4. Physical Asset Integrity (Clean, Non-Stock, Real Gym Assets)
 import { assets } from "../src/config/assets.js";
 
 const singleAssets = [
   assets.logo,
   assets.heroImage,
   assets.heroFallback,
+  assets.gymOwner,
   assets.videoPoster,
   assets.gymInterior,
+  assets.gymInterior2,
   assets.strengthTraining,
   assets.weightLoss,
   assets.muscleGain,
   assets.generalFitness,
-  assets.trainingEquipment,
   assets.trainerSession
 ];
 
@@ -92,13 +105,11 @@ for (const assetPath of singleAssets) {
   const exists = fs.existsSync(filePath);
   const size = exists ? fs.statSync(filePath).size : 0;
   assert(exists && size > 1000, `Asset '${assetPath}' physically exists with valid size (${(size / 1024).toFixed(1)} KB)`);
-
-  // Verify dual extension availability for photo assets
-  if (assetPath.endsWith(".jpg")) {
-    const jpegPath = filePath.replace(/\.jpg$/i, ".jpeg");
-    assert(fs.existsSync(jpegPath), `Companion .jpeg alias exists for '${assetPath}'`);
-  }
 }
+
+// Verify Unsplash stock images are deleted
+assert(!fs.existsSync(path.join(rootDir, "public/assets/images/training-equipment.jpg")), "Unsplash stock photo training-equipment.jpg is permanently removed");
+assert(!fs.existsSync(path.join(rootDir, "public/assets/images/training-equipment.jpeg")), "Unsplash stock photo training-equipment.jpeg is permanently removed");
 
 // Check Gallery assets
 for (const item of assets.gallery) {
@@ -134,9 +145,9 @@ async function checkHttpAssets() {
   const testUrls = [
     assets.logo,
     assets.heroImage,
-    assets.heroImage.replace(/\.jpg$/, ".jpeg"),
+    assets.gymOwner,
     assets.gymInterior,
-    assets.gymInterior.replace(/\.jpg$/, ".jpeg"),
+    assets.gymInterior2,
     assets.heroVideo,
     assets.gymTourVideo
   ];

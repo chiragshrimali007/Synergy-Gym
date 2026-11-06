@@ -34,15 +34,15 @@ export default function HeroSection() {
       id="hero"
       style={{
         position: "relative",
-        paddingTop: "calc(var(--header-height) + 24px)",
-        paddingBottom: "56px",
+        paddingTop: "calc(var(--header-height) + 12px)",
+        paddingBottom: "36px",
         overflow: "hidden",
         backgroundColor: "var(--bg-primary)"
       }}
     >
       <div className="container">
-        {/* Top Establishment Pill */}
-        <div style={{ display: "flex", justifyContent: "flex-start", marginBottom: "16px" }}>
+        {/* Top Establishment & Special Batch Pills */}
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", alignItems: "center", marginBottom: "16px" }}>
           <div
             className="section-tag"
             style={{
@@ -54,6 +54,25 @@ export default function HeroSection() {
             <Calendar size={13} style={{ flexShrink: 0 }} />
             <span>Building stronger habits since {BUSINESS_INFO.establishedYear}</span>
           </div>
+
+          <a
+            href="#programs"
+            style={{
+              backgroundColor: "rgba(22, 163, 74, 0.1)",
+              border: "1px solid rgba(22, 163, 74, 0.25)",
+              color: "var(--brand-green)",
+              fontWeight: 700,
+              fontSize: "clamp(0.72rem, 2vw, 0.8rem)",
+              padding: "5px 12px",
+              borderRadius: "var(--radius-full)",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "6px",
+              textDecoration: "none"
+            }}
+          >
+            <span>✨ Exclusive Girls Batch: 4 PM – 5 PM</span>
+          </a>
         </div>
 
         {/* Hero Responsive Layout */}
@@ -62,13 +81,13 @@ export default function HeroSection() {
           <div className="hero-content-col">
             <h1
               style={{
-                fontSize: "clamp(2rem, 6.2vw, 4rem)",
+                fontSize: "var(--text-h1)",
                 fontWeight: 900,
                 textTransform: "uppercase",
-                letterSpacing: "-0.03em",
+                letterSpacing: "-0.025em",
                 color: "var(--text-primary)",
-                lineHeight: 1.1,
-                marginBottom: "20px",
+                lineHeight: "var(--line-height-heading)",
+                marginBottom: "16px",
                 overflowWrap: "break-word",
                 wordBreak: "break-word"
               }}
@@ -80,11 +99,11 @@ export default function HeroSection() {
 
             <p
               style={{
-                fontSize: "clamp(0.9375rem, 2vw, 1.1875rem)",
-                lineHeight: 1.6,
+                fontSize: "var(--text-body)",
+                lineHeight: "var(--line-height-body)",
                 color: "var(--text-secondary)",
                 maxWidth: "520px",
-                marginBottom: "32px"
+                marginBottom: "24px"
               }}
             >
               Build strength. Improve fitness. Show up for yourself. Start your journey with Synergy Gym.
@@ -96,10 +115,10 @@ export default function HeroSection() {
                 href="#membership"
                 onClick={scrollToMembership}
                 className="btn btn-primary"
-                style={{ padding: "14px 28px", fontSize: "0.9375rem" }}
+                style={{ padding: "12px 24px" }}
               >
                 <span>Explore Memberships</span>
-                <ArrowUpRight size={17} />
+                <ArrowUpRight size={16} />
               </a>
 
               <a
@@ -107,9 +126,9 @@ export default function HeroSection() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn btn-whatsapp"
-                style={{ padding: "14px 24px", fontSize: "0.9375rem" }}
+                style={{ padding: "12px 22px" }}
               >
-                <MessageCircle size={17} />
+                <MessageCircle size={16} />
                 <span>Talk to Our Team</span>
               </a>
             </div>
@@ -258,19 +277,19 @@ export default function HeroSection() {
         }
 
         .hero-stat-num {
-          font-size: clamp(1.375rem, 3.5vw, 1.75rem);
+          font-size: clamp(20px, 2.8vw, 24px);
           font-weight: 900;
           color: var(--text-primary);
           font-family: var(--font-heading);
-          line-height: 1.1;
+          line-height: var(--line-height-heading);
         }
 
         .hero-stat-label {
-          font-size: clamp(0.6875rem, 1.8vw, 0.8125rem);
+          font-size: var(--text-caption);
           color: var(--text-muted);
           font-weight: 600;
           margin-top: 2px;
-          line-height: 1.3;
+          line-height: 1.35;
         }
 
         .hero-media-container {

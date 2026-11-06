@@ -10,22 +10,65 @@ export const BUSINESS_INFO = {
   phoneDisplay: "+91 96100 20780",
   whatsappNumber: "919610020780", // International format without +
   email: "contact@synergygym.in",
+
+  // Exact Physical Location Coordinates
+  coordinates: {
+    lat: 26.31492966707864,
+    lng: 73.05242410415379,
+    label: "26.3149° N, 73.0524° E"
+  },
+
   address: {
     line1: "Opposite Badwasia Govt. School",
     area: "Maderana Colony, Blue City",
     city: "Jodhpur",
     state: "Rajasthan",
     country: "India",
-    full: "Opposite Badwasia Govt. School, Maderana Colony, Blue City, Jodhpur, Rajasthan, India"
+    landmark: "Directly opposite Badwasia Government School main gate",
+    full: "Opposite Badwasia Govt. School, Maderana Colony, Blue City, Jodhpur, Rajasthan 342007, India"
   },
+
   hours: {
     morning: "5:30 AM – 10:30 AM",
-    evening: "4:30 PM – 9:30 PM",
+    girlsBatch: "4:00 PM – 5:00 PM",
+    evening: "5:00 PM – 9:30 PM",
     days: "Monday – Saturday (Sunday Closed / Rest Day)"
   },
-  googleMapsUrl: "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent("Opposite Badwasia Govt. School, Maderana Colony, Jodhpur, Rajasthan, India"),
-  // Interactive Google Maps Embed query
-  mapEmbedUrl: "https://maps.google.com/maps?q=" + encodeURIComponent("Badwasia Govt School Maderana Colony Jodhpur Rajasthan") + "&t=&z=15&ie=UTF8&iwloc=&output=embed",
+
+  // Dedicated Exclusive Batch for Women & Girls
+  girlsBatch: {
+    title: "Girls Persona Batch",
+    badge: "Exclusive Women's Hour",
+    timing: "4:00 PM – 5:00 PM",
+    shift: "Every Evening (Mon – Sat)",
+    description: "A private, comfortable, and empowering workout hour exclusively reserved for women and girls. Train with confidence, personalized guidance, and complete peace of mind.",
+    features: [
+      "Exclusive Women's Floor Access (No General Crowd During This Hour)",
+      "Safe, Comfortable & Highly Respectful Atmosphere",
+      "Full Equipment Availability (Treadmills, Dumbbells, Resistance Machines)",
+      "Targeted Fat Loss, Toning, Core Stability & Posture Routines",
+      "Direct Coach Guidance & Machine Form Correction for Beginners"
+    ]
+  },
+
+  // Founder & Head Coach Information
+  owner: {
+    title: "Founder & Head Coach",
+    role: "Gym Owner & Lead Trainer",
+    experience: "10+ Years Coaching Experience",
+    bio: "Passionate about real, functional fitness and disciplined habits. Founded Synergy Gym in 2015 to provide honest, gimmick-free training where everyone—from beginners to serious athletes—receives personal attention and proper lifting education.",
+    highlights: [
+      "10+ Years Active Fitness Coaching in Jodhpur",
+      "Specialized in Natural Hypertrophy & Joint Longevity",
+      "Hands-on Floor Supervision & Technique Correction",
+      "Direct Guidance for Every Member"
+    ]
+  },
+
+  // Exact Google Maps Directions & Search URLs
+  googleMapsUrl: "https://www.google.com/maps/search/?api=1&query=26.31492966707864,73.05242410415379",
+  googleMapsDirectionsUrl: "https://www.google.com/maps/dir/?api=1&destination=26.31492966707864,73.05242410415379",
+  mapEmbedUrl: "https://maps.google.com/maps?q=26.31492966707864,73.05242410415379&hl=en&z=17&output=embed",
 
   membershipPlans: [
     {

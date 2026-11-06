@@ -2,12 +2,20 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import { assets } from "../config/assets";
 import { WHATSAPP_MESSAGES, buildWhatsAppUrl } from "../utils/whatsapp";
 import { handleImageFallback } from "../utils/media";
-import { Camera, X, ChevronLeft, ChevronRight, ArrowUpRight } from "lucide-react";
+import {
+  Camera,
+  X,
+  ChevronLeft,
+  ChevronRight,
+  ArrowUpRight,
+  Maximize2
+} from "lucide-react";
 
 export default function GallerySection() {
   const [activeFilter, setActiveFilter] = useState("all");
   const [lightboxIndex, setLightboxIndex] = useState(null);
   const touchStartX = useRef(null);
+  const trackRef = useRef(null);
 
   const galleryItems = assets.gallery || [];
 
@@ -34,6 +42,14 @@ export default function GallerySection() {
       setLightboxIndex((prev) => (prev - 1 + filteredItems.length) % filteredItems.length);
     }
   }, [lightboxIndex, filteredItems.length]);
+
+  // Track horizontal scroll navigation for arrows
+  const scrollTrack = (direction) => {
+    if (trackRef.current) {
+      const scrollAmount = direction === "left" ? -260 : 260;
+      trackRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
+    }
+  };
 
   // Touch Swipe Handlers for Mobile Lightbox
   const handleTouchStart = (e) => {
@@ -81,50 +97,85 @@ export default function GallerySection() {
     <section id="gallery" className="section" style={{ backgroundColor: "var(--bg-primary)" }}>
       <div className="container">
         {/* Section Header */}
-        <div style={{ textAlign: "center", maxWidth: "700px", margin: "0 auto 36px auto" }}>
+        <div style={{ textAlign: "center", maxWidth: "680px", margin: "0 auto 24px auto" }}>
           <div className="section-tag">
             <Camera size={14} />
-            <span>Facility & Training Gallery</span>
+            <span>Facility & Floor Gallery</span>
           </div>
           <h2 className="section-title">
             INSIDE SYNERGY GYM
           </h2>
           <p className="section-description" style={{ margin: "0 auto" }}>
-            A visual look into our training floor, iron racks, free weights, and dedicated workout atmosphere.
+            Real photos of our training floor, iron racks, and equipment. Tap any photo to expand full-screen.
           </p>
         </div>
 
-        {/* Filter Tabs */}
-        <div className="gallery-filter-tabs">
-          {[
-            { id: "all", label: "All Photos" },
-            { id: "interior", label: "Gym Floor" },
-            { id: "strength", label: "Strength" },
-            { id: "equipment", label: "Equipment" },
-            { id: "training", label: "Conditioning" }
-          ].map((tab) => (
+        {/* Filter Tabs & Scroll Controls Row */}
+        <div className="gallery-controls-bar">
+          {/* Category Filter Pills */}
+          <div className="gallery-filter-tabs">
+            {[
+              { id: "all", label: `All (${galleryItems.length})` },
+              { id: "interior", label: "Gym Floor" },
+              { id: "strength", label: "Strength" },
+              { id: "equipment", label: "Equipment" },
+              { id: "training", label: "Conditioning" }
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => {
+                  setActiveFilter(tab.id);
+                  if (trackRef.current) trackRef.current.scrollTo({ left: 0, behavior: "smooth" });
+                }}
+                className={`gallery-tab-btn ${activeFilter === tab.id ? "active" : ""}`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Nav Arrows for smooth 1-line scrolling on desktop/tablet */}
+          <div className="gallery-nav-arrows">
             <button
-              key={tab.id}
-              onClick={() => setActiveFilter(tab.id)}
-              className="gallery-tab-btn"
-              style={{
-                border: activeFilter === tab.id ? "1.5px solid var(--brand-green)" : "1.5px solid var(--border-light)",
-                backgroundColor: activeFilter === tab.id ? "var(--text-primary)" : "var(--bg-surface)",
-                color: activeFilter === tab.id ? "#FFFFFF" : "var(--text-secondary)"
-              }}
+              onClick={() => scrollTrack("left")}
+              aria-label="Scroll photos left"
+              className="gallery-arrow-btn"
             >
-              {tab.label}
+              <ChevronLeft size={18} />
             </button>
-          ))}
+            <button
+              onClick={() => scrollTrack("right")}
+              aria-label="Scroll photos right"
+              className="gallery-arrow-btn"
+            >
+              <ChevronRight size={18} />
+            </button>
+          </div>
         </div>
 
-        {/* Responsive Gallery Grid */}
-        <div className="gallery-responsive-grid">
+        {/* ========================================================================= */}
+        {/* SINGLE-LINE HORIZONTAL SCROLL IMAGE TRACK (Short, Compact & Clickable) */}
+        {/* ========================================================================= */}
+        <div
+          ref={trackRef}
+          className="gallery-single-line-track"
+          role="region"
+          aria-label="Gym photos horizontal scroll track"
+        >
           {filteredItems.map((item, index) => (
             <div
               key={index}
               onClick={() => openLightbox(index)}
               className="gallery-item-card"
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  openLightbox(index);
+                }
+              }}
+              aria-label={`View photo: ${item.caption}`}
             >
               <img
                 src={item.url}
@@ -134,7 +185,13 @@ export default function GallerySection() {
                 className="gallery-item-img"
               />
 
-              {/* Caption Bar (Visible on mobile, enhanced on hover) */}
+              {/* Click / Expand Badge Overlay */}
+              <div className="gallery-expand-badge">
+                <Maximize2 size={12} />
+                <span>View</span>
+              </div>
+
+              {/* Subtle Caption Footer */}
               <div className="gallery-item-caption">
                 <span>{item.caption}</span>
               </div>
@@ -142,27 +199,33 @@ export default function GallerySection() {
           ))}
         </div>
 
-        {/* Bottom Tour Enquiry */}
-        <div style={{ textAlign: "center", marginTop: "36px" }}>
+        {/* Mobile Swipe Hint & Direct CTA */}
+        <div className="gallery-bottom-hint">
+          <span style={{ fontSize: "0.8125rem", color: "var(--text-muted)", display: "flex", alignItems: "center", gap: "6px" }}>
+            <span>👈 Swipe left/right to view all photos • Tap any photo to expand full size</span>
+          </span>
+
           <a
             href={buildWhatsAppUrl(WHATSAPP_MESSAGES.VISIT_THE_GYM)}
             target="_blank"
             rel="noopener noreferrer"
             className="btn btn-outline"
-            style={{ padding: "12px 22px", fontSize: "0.875rem" }}
+            style={{ padding: "8px 16px", fontSize: "0.8125rem", minHeight: "40px" }}
           >
-            <span>Want to see the gym in person? Book a walk-in visit</span>
-            <ArrowUpRight size={16} />
+            <span>Book a Walk-in Visit</span>
+            <ArrowUpRight size={14} />
           </a>
         </div>
       </div>
 
-      {/* Accessible Lightbox Modal */}
+      {/* ========================================================================= */}
+      {/* SINGLE-IMAGE FULL-SCREEN INTERACTIVE LIGHTBOX VIEWER */}
+      {/* ========================================================================= */}
       {lightboxIndex !== null && filteredItems[lightboxIndex] && (
         <div
           role="dialog"
           aria-modal="true"
-          aria-label="Gym Photo Lightbox"
+          aria-label="Gym Photo Full-Screen Viewer"
           onClick={closeLightbox}
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
@@ -173,20 +236,25 @@ export default function GallerySection() {
             onClick={(e) => e.stopPropagation()}
             className="lightbox-top-bar"
           >
-            <span style={{ fontSize: "0.875rem", color: "var(--brand-electric)", fontWeight: 700 }}>
-              {lightboxIndex + 1} / {filteredItems.length}
-            </span>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <span style={{ fontSize: "0.875rem", color: "var(--brand-electric)", fontWeight: 800 }}>
+                {lightboxIndex + 1} / {filteredItems.length}
+              </span>
+              <span style={{ fontSize: "0.75rem", color: "#94A3B8" }}>
+                • Synergy Gym Gallery
+              </span>
+            </div>
 
             <button
               onClick={closeLightbox}
-              aria-label="Close lightbox"
+              aria-label="Close photo viewer"
               className="lightbox-close-btn"
             >
-              <X size={22} />
+              <X size={20} />
             </button>
           </div>
 
-          {/* Main Stage with Touch & Nav Controls */}
+          {/* Main Stage with Single Full-Size Image & Nav Controls */}
           <div
             onClick={(e) => e.stopPropagation()}
             className="lightbox-stage"
@@ -220,46 +288,123 @@ export default function GallerySection() {
             </button>
           </div>
 
-          {/* Footer Guidance */}
+          {/* Bottom Swipe Hint */}
           <div style={{ textAlign: "center", color: "var(--text-inverse-muted)", fontSize: "0.75rem", paddingBottom: "var(--sab)" }}>
-            Swipe or use arrow keys • Tap outside to close
+            Swipe left/right to change photo • Tap (X) to close
           </div>
         </div>
       )}
 
       <style>{`
+        /* Controls Bar */
+        .gallery-controls-bar {
+          display: flex;
+          align-items: center;
+          justifyContent: space-between;
+          gap: 12px;
+          margin-bottom: 16px;
+        }
+
         .gallery-filter-tabs {
           display: flex;
-          justifyContent: center;
-          flex-wrap: wrap;
+          align-items: center;
           gap: 8px;
-          margin-bottom: 28px;
+          overflow-x: auto;
+          scrollbar-width: none;
+          -webkit-overflow-scrolling: touch;
+          padding: 4px 0;
+        }
+        .gallery-filter-tabs::-webkit-scrollbar {
+          display: none;
         }
 
         .gallery-tab-btn {
-          padding: 8px 16px;
+          padding: 6px 14px;
           border-radius: var(--radius-full);
-          font-size: 0.8125rem;
+          font-size: 0.75rem;
           font-weight: 700;
+          white-space: nowrap;
+          border: 1px solid var(--border-light);
+          background-color: var(--bg-surface);
+          color: var(--text-secondary);
           transition: all 0.2s ease;
-          min-height: 38px;
+          min-height: 32px;
+          flex-shrink: 0;
         }
 
-        .gallery-responsive-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
-          gap: 16px;
+        .gallery-tab-btn.active {
+          border-color: var(--brand-green);
+          background-color: var(--text-primary);
+          color: #FFFFFF;
         }
 
+        .gallery-nav-arrows {
+          display: none;
+          align-items: center;
+          gap: 6px;
+          flex-shrink: 0;
+        }
+
+        @media (min-width: 768px) {
+          .gallery-nav-arrows {
+            display: flex;
+          }
+        }
+
+        .gallery-arrow-btn {
+          width: 34px;
+          height: 34px;
+          border-radius: 50%;
+          border: 1px solid var(--border-light);
+          background-color: var(--bg-surface);
+          color: var(--text-primary);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.2s ease;
+        }
+        .gallery-arrow-btn:hover {
+          background-color: var(--text-primary);
+          color: #FFFFFF;
+        }
+
+        /* Single-Line Horizontal Scroll Track */
+        .gallery-single-line-track {
+          display: flex;
+          flex-direction: row;
+          flex-wrap: nowrap;
+          gap: 14px;
+          overflow-x: auto;
+          scroll-snap-type: x mandatory;
+          -webkit-overflow-scrolling: touch;
+          scrollbar-width: none;
+          padding: 6px 2px 14px 2px;
+          width: 100%;
+        }
+        .gallery-single-line-track::-webkit-scrollbar {
+          display: none;
+        }
+
+        /* Short, Compact Image Cards */
         .gallery-item-card {
+          flex: 0 0 clamp(180px, 46vw, 240px);
+          height: clamp(125px, 28vw, 160px);
           position: relative;
-          border-radius: var(--radius-lg);
+          border-radius: var(--radius-md);
           overflow: hidden;
           cursor: pointer;
-          aspect-ratio: 4 / 3;
           background-color: #0F172A;
-          border: 1px solid var(--border-light);
-          width: 100%;
+          border: 1.5px solid var(--border-light);
+          box-shadow: var(--shadow-sm);
+          scroll-snap-align: start;
+          transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+          flex-shrink: 0;
+        }
+
+        .gallery-item-card:hover {
+          transform: translateY(-2px);
+          border-color: var(--brand-green);
+          box-shadow: 0 8px 20px -6px rgba(22, 163, 74, 0.25);
         }
 
         .gallery-item-img {
@@ -269,33 +414,61 @@ export default function GallerySection() {
           transition: transform 0.35s ease;
         }
 
+        .gallery-item-card:hover .gallery-item-img {
+          transform: scale(1.05);
+        }
+
+        .gallery-expand-badge {
+          position: absolute;
+          top: 8px;
+          right: 8px;
+          background-color: rgba(15, 23, 42, 0.8);
+          backdrop-filter: blur(4px);
+          -webkit-backdrop-filter: blur(4px);
+          color: #FFFFFF;
+          padding: 3px 8px;
+          border-radius: var(--radius-full);
+          font-size: 0.6875rem;
+          font-weight: 700;
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          z-index: 2;
+        }
+
         .gallery-item-caption {
           position: absolute;
           bottom: 0;
           left: 0;
           right: 0;
-          background: linear-gradient(180deg, transparent 0%, rgba(15, 23, 42, 0.85) 100%);
+          background: linear-gradient(180deg, transparent 0%, rgba(15, 23, 42, 0.9) 100%);
           color: #FFFFFF;
-          padding: 24px 14px 12px;
-          font-size: 0.8125rem;
+          padding: 18px 10px 8px 10px;
+          font-size: 0.75rem;
           font-weight: 600;
-          line-height: 1.3;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
 
-        @media (hover: hover) and (pointer: fine) {
-          .gallery-item-card:hover .gallery-item-img {
-            transform: scale(1.04);
-          }
+        /* Bottom Hint & CTA */
+        .gallery-bottom-hint {
+          display: flex;
+          align-items: center;
+          justifyContent: space-between;
+          flex-wrap: wrap;
+          gap: 12px;
+          margin-top: 6px;
         }
 
-        /* Lightbox Mobile Architecture */
+        /* Lightbox Fullscreen Viewer */
         .lightbox-overlay {
           position: fixed;
           inset: 0;
           z-index: 9999;
-          background-color: rgba(11, 15, 25, 0.96);
-          backdrop-filter: blur(12px);
-          -webkit-backdrop-filter: blur(12px);
+          background-color: rgba(11, 15, 25, 0.97);
+          backdrop-filter: blur(14px);
+          -webkit-backdrop-filter: blur(14px);
           display: flex;
           flex-direction: column;
           justifyContent: space-between;
@@ -315,14 +488,18 @@ export default function GallerySection() {
         }
 
         .lightbox-close-btn {
-          width: 44px;
-          height: 44px;
+          width: 40px;
+          height: 40px;
           border-radius: 50%;
           background-color: rgba(255, 255, 255, 0.15);
           color: #FFFFFF;
           display: flex;
           align-items: center;
           justify-content: center;
+          transition: background-color 0.2s ease;
+        }
+        .lightbox-close-btn:hover {
+          background-color: rgba(255, 255, 255, 0.3);
         }
 
         .lightbox-stage {
@@ -332,12 +509,12 @@ export default function GallerySection() {
           margin: 0 auto;
           display: flex;
           align-items: center;
-          justifyContent: center;
+          justify-content: center;
           gap: 8px;
         }
 
         .lightbox-img-wrapper {
-          max-height: 68vh;
+          max-height: 72vh;
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -345,19 +522,21 @@ export default function GallerySection() {
         }
 
         .lightbox-active-img {
-          max-height: 60vh;
-          max-width: 85vw;
+          max-height: 62vh;
+          max-width: 88vw;
           object-fit: contain;
           border-radius: var(--radius-md);
+          box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5);
         }
 
         .lightbox-caption-text {
-          margin-top: 12px;
+          margin-top: 14px;
           color: #FFFFFF;
           font-size: 0.875rem;
           font-weight: 600;
           text-align: center;
           max-width: 90%;
+          line-height: 1.4;
         }
 
         .lightbox-nav-btn {
@@ -371,15 +550,19 @@ export default function GallerySection() {
           justify-content: center;
           flex-shrink: 0;
           z-index: 10;
+          transition: background-color 0.2s ease;
+        }
+        .lightbox-nav-btn:hover {
+          background-color: rgba(255, 255, 255, 0.35);
         }
 
         @media (max-width: 480px) {
           .lightbox-nav-btn {
-            width: 38px;
-            height: 38px;
+            width: 36px;
+            height: 36px;
           }
           .lightbox-active-img {
-            max-width: 78vw;
+            max-width: 80vw;
           }
         }
       `}</style>

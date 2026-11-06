@@ -7,6 +7,12 @@ export const WHATSAPP_MESSAGES = {
   GENERAL_ENQUIRY:
     "Hello Synergy Gym! I found your website and would like to know more about the gym, available facilities, and joining process.",
   
+  GIRLS_BATCH:
+    "Hello Synergy Gym! I want to inquire about the exclusive Girls Persona Batch (4:00 PM - 5:00 PM). Please share enrollment details and fees.",
+
+  OWNER_DIRECT:
+    "Hello Synergy Gym! I would like to connect directly with the gym owner & head coach regarding training and memberships.",
+
   ONE_MONTH:
     "Hello Synergy Gym! I am interested in the 1 Month membership priced at ₹1,000. Please share the joining process and available timings.",
   

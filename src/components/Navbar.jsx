@@ -44,6 +44,7 @@ export default function Navbar() {
     { label: "Programs", href: "#programs" },
     { label: "Experience", href: "#experience" },
     { label: "Membership", href: "#membership" },
+    { label: "FAQ", href: "#faq" },
     { label: "Gallery", href: "#gallery" },
     { label: "About", href: "#about" },
     { label: "Location", href: "#location" }
@@ -237,7 +238,7 @@ export default function Navbar() {
                   href={link.href}
                   onClick={(e) => handleLinkClick(e, link.href)}
                   style={{
-                    fontSize: "1.25rem",
+                    fontSize: "var(--text-h3)",
                     fontWeight: 800,
                     fontFamily: "var(--font-heading)",
                     color: "var(--text-primary)",
