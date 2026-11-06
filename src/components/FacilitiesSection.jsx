@@ -1,7 +1,6 @@
 import React, { useState, useRef } from "react";
 import { assets } from "../config/assets";
 import { BUSINESS_INFO } from "../config/business";
-import { WHATSAPP_MESSAGES, buildWhatsAppUrl } from "../utils/whatsapp";
 import { handleImageFallback } from "../utils/media";
 import {
   Dumbbell,
@@ -11,7 +10,6 @@ import {
   Award,
   Sparkles,
   Play,
-  ArrowUpRight,
   Eye
 } from "lucide-react";
 
@@ -62,7 +60,7 @@ export default function FacilitiesSection() {
     <section id="experience" className="section" style={{ backgroundColor: "var(--bg-primary)" }}>
       <div className="container">
         {/* Section Header */}
-        <div style={{ maxWidth: "700px", marginBottom: "36px" }}>
+        <div style={{ maxWidth: "700px", marginBottom: "28px" }}>
           <div className="section-tag">
             <Eye size={14} />
             <span>The Synergy Environment</span>
@@ -73,6 +71,21 @@ export default function FacilitiesSection() {
           <p className="section-description">
             We provide clean, well-maintained equipment and a focused community environment where both beginners and seasoned lifters can train consistently every day.
           </p>
+        </div>
+
+        {/* 1. Authentic Floor Video Badge (Shifted Outside Overlay) */}
+        <div style={{ display: "flex", justifyContent: "flex-start", marginBottom: "12px" }}>
+          <span
+            className="badge-pill badge-green"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "6px",
+              fontSize: "var(--text-caption)"
+            }}
+          >
+            <span>Authentic Floor Video</span>
+          </span>
         </div>
 
         {/* Video Showcase Stage */}
@@ -112,22 +125,22 @@ export default function FacilitiesSection() {
               />
             )}
 
-            {/* Custom Overlay when video is not actively playing */}
+            {/* Custom Overlay (Clean, Centered, Fully Clickable to Play) */}
             {!isPlaying && (
-              <div className="video-poster-overlay">
-                <div>
-                  <span
-                    className="badge-pill badge-green"
-                    style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: "6px",
-                      marginBottom: "12px",
-                      fontSize: "var(--text-caption)"
-                    }}
-                  >
-                    <span>Authentic Floor Video</span>
-                  </span>
+              <div
+                className="video-poster-overlay"
+                onClick={handlePlayRequest}
+                role="button"
+                tabIndex={0}
+                aria-label="Play gym tour video"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    handlePlayRequest();
+                  }
+                }}
+              >
+                <div style={{ textAlign: "center", marginBottom: "16px", padding: "0 16px" }}>
                   <h3
                     style={{
                       fontSize: "clamp(1.125rem, 3.2vw, 1.75rem)",
@@ -135,56 +148,26 @@ export default function FacilitiesSection() {
                       color: "#FFFFFF",
                       textTransform: "uppercase",
                       letterSpacing: "-0.01em",
-                      lineHeight: "var(--line-height-heading)"
+                      lineHeight: "var(--line-height-heading)",
+                      textShadow: "0 2px 8px rgba(0,0,0,0.6)"
                     }}
                   >
                     TAKE A LOOK INSIDE SYNERGY
                   </h3>
+                  <p
+                    style={{
+                      fontSize: "var(--text-caption)",
+                      color: "rgba(255, 255, 255, 0.85)",
+                      marginTop: "6px"
+                    }}
+                  >
+                    Tap anywhere to play video
+                  </p>
                 </div>
 
                 {/* Central Play Button */}
-                <div style={{ display: "flex", justifyContent: "center", alignItems: "center", margin: "16px 0" }}>
-                  <button
-                    onClick={handlePlayRequest}
-                    aria-label="Play gym tour video"
-                    className="video-play-btn"
-                  >
-                    <Play size={28} fill="#0F172A" style={{ marginLeft: "4px" }} />
-                  </button>
-                </div>
-
-                {/* Bottom Overlay Info & Action */}
-                <div
-                  style={{
-                    position: "absolute",
-                    bottom: "16px",
-                    left: "16px",
-                    right: "16px",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    flexWrap: "wrap",
-                    gap: "10px",
-                    backgroundColor: "rgba(15, 23, 42, 0.9)",
-                    padding: "10px 16px",
-                    borderRadius: "var(--radius-md)",
-                    color: "#FFFFFF"
-                  }}
-                >
-                  <div>
-                    <div style={{ fontWeight: 700, fontSize: "0.875rem" }}>Visit Synergy Gym in Person</div>
-                    <div style={{ fontSize: "var(--text-caption)", color: "var(--text-inverse-muted)" }}>Walk-in tours open during floor hours</div>
-                  </div>
-                  <a
-                    href={buildWhatsAppUrl(WHATSAPP_MESSAGES.VISIT_THE_GYM)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn btn-lime"
-                    style={{ padding: "6px 14px", minHeight: "36px" }}
-                  >
-                    <span>Book Tour</span>
-                    <ArrowUpRight size={14} />
-                  </a>
+                <div className="video-play-btn" aria-hidden="true">
+                  <Play size={28} fill="#0F172A" style={{ marginLeft: "4px" }} />
                 </div>
               </div>
             )}
@@ -230,7 +213,7 @@ export default function FacilitiesSection() {
           background-color: #0B0F19;
           border: 1px solid var(--border-light);
           box-shadow: var(--shadow-xl);
-          margin-bottom: 36px;
+          margin-bottom: 32px;
         }
 
         .video-aspect-container {
@@ -246,10 +229,13 @@ export default function FacilitiesSection() {
           inset: 0;
           display: flex;
           flex-direction: column;
-          justifyContent: space-between;
+          justifyContent: center;
+          align-items: center;
           padding: clamp(14px, 3.5vw, 32px);
-          background: linear-gradient(180deg, rgba(11, 15, 25, 0.3) 0%, rgba(11, 15, 25, 0.85) 100%);
+          background: linear-gradient(180deg, rgba(11, 15, 25, 0.25) 0%, rgba(11, 15, 25, 0.75) 100%);
           z-index: 2;
+          cursor: pointer;
+          user-select: none;
         }
 
         .video-play-btn {
@@ -265,7 +251,8 @@ export default function FacilitiesSection() {
           transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
-        .video-play-btn:active {
+        .video-play-btn:active,
+        .video-poster-overlay:active .video-play-btn {
           transform: scale(0.92);
         }
 
